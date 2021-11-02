@@ -1,2 +1,2 @@
 # ProyectoFinalCGIHC
-repositorio de ducado a el proyecto final del laboratorio de Computación Gráfica e Interacción Humano-Computadora 20221.
+Repositorio de dedicado a el proyecto final del laboratorio de Computación Gráfica e Interacción Humano-Computadora 20221.
