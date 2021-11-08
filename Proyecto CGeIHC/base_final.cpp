@@ -3,6 +3,7 @@ Semestre 2022-1
 Práctica: Animación Sencilla y animación compleja
 */
 //para cargar imagen
+//cometario commit
 #define STB_IMAGE_IMPLEMENTATION
 
 #include <stdio.h>
