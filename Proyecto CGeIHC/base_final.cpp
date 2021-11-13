@@ -46,10 +46,6 @@ std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
 Camera camera;
 
-Texture brickTexture;
-Texture dirtTexture;
-Texture plainTexture;
-Texture dadoTexture;
 Texture pisoTexture;
 Texture Tagave;
 //materiales
@@ -61,11 +57,11 @@ DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
 SpotLight spotLights[MAX_SPOT_LIGHTS];
 
-Model Kitt_M;
-Model Llanta_M;
-Model Camino_M;
-Model Blackhawk_M;
-Model Dado_M;
+Model Jengibre;
+Model Pinocchio;
+Model House;
+Model Letrina;
+Model Cartel;
 
 Skybox skybox;
 
@@ -271,29 +267,24 @@ int main()
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 5.0f, 0.5f);
 
-	brickTexture = Texture("Textures/brick.png");
-	brickTexture.LoadTextureA();
-	dirtTexture = Texture("Textures/dirt.png");
-	dirtTexture.LoadTextureA();
-	plainTexture = Texture("Textures/plain.png");
-	plainTexture.LoadTextureA();
-	dadoTexture = Texture("Textures/dado.tga");
-	dadoTexture.LoadTextureA();
-	pisoTexture= Texture("Textures/piso.tga");
+
+	pisoTexture= Texture("Textures/musgo.tga");
 	pisoTexture.LoadTextureA();
 	Tagave = Texture("Textures/Agave.tga");
 	Tagave.LoadTextureA();
 	Material_brillante = Material(4.0f, 256);
 	Material_opaco = Material(0.3f, 4);
 
-	Kitt_M = Model();
-	Kitt_M.LoadModel("Models/kitt.obj");
-	Llanta_M = Model();
-	Llanta_M.LoadModel("Models/llanta.obj");
-	Blackhawk_M = Model();
-	Blackhawk_M.LoadModel("Models/uh60.obj");
-	Camino_M = Model();
-	Camino_M.LoadModel("Models/railroad track.obj");
+	Jengibre = Model();
+	Jengibre.LoadModel("Models/GingerbreadMan.obj");
+	Pinocchio = Model();
+	Pinocchio.LoadModel("Models/pinocchio.obj");
+	Letrina = Model();
+	Letrina.LoadModel("Models/letrina.obj");
+	House = Model();
+	House.LoadModel("Models/house.obj");
+	Cartel = Model();
+	Cartel.LoadModel("Models/cartel.obj");
 
 	//luz direccional, sólo 1 y siempre debe de existir
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f, 
@@ -326,26 +317,18 @@ int main()
 		1.0f, 0.0f, 0.0f,
 		10.0f);
 	spotLightCount++;
-	//luz de faro
-	 //luz de helicóptero
+
 	
 
 	glm::vec3 posblackhawk = glm::vec3(2.0f, 0.0f, 0.0f);
 
 	std::vector<std::string> skyboxFaces;
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_lf.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_dn.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_up.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_bk.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_ft.tga"); 
-
-	/*skyboxFaces.push_back("Textures/Skybox/cupertin-lake-night_rt.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake-night_lf.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake-night_dn.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake-night_up.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake-night_bk.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake-night_ft.tga");*/
+	skyboxFaces.push_back("Textures/Skybox/posx.tga");
+	skyboxFaces.push_back("Textures/Skybox/negx.tga");
+	skyboxFaces.push_back("Textures/Skybox/negy.tga");
+	skyboxFaces.push_back("Textures/Skybox/posy.tga");
+	skyboxFaces.push_back("Textures/Skybox/posz.tga");
+	skyboxFaces.push_back("Textures/Skybox/negz.tga");
 
 
 	skybox = Skybox(skyboxFaces);
@@ -406,11 +389,11 @@ int main()
 
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(30.0f, 1.0f, 30.0f));
+		model = glm::scale(model, glm::vec3(5.0f, 1.0f, 5.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		//pisoTexture.UseTexture();
-		plainTexture.UseTexture();
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		pisoTexture.UseTexture();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[2]->RenderMesh();
 
 		//modelaux = glm::mat4(1.0);
@@ -418,40 +401,43 @@ int main()
 		modelaux=model = glm::translate(model, glm::vec3(movCoche, -1.5f, 0.2f));
 		//modelaux = model;
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
-		/*model = glm::scale(model, glm::vec3(0.005f, 0.005f, 0.005f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));*/
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		Kitt_M.RenderModel();		
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Jengibre.RenderModel();
 			model = modelaux;
 			model = glm::translate(model, glm::vec3(-1.0, -0.1f, 0.2f));
-			model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.07f));
+			model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 			model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 			model = glm::rotate(model, rotllanta * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 			Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
-			Llanta_M.RenderModel();
-		//Dado_M.RenderModel();
+			Pinocchio.RenderModel();
+		
 
 		model = glm::mat4(1.0);
-		posblackhawk = glm::vec3(2.0f, 2.0f, 0.0f);
-		model = glm::translate(model, posblackhawk);
-		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
-		model = glm::rotate(model, -90* toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::translate(model, glm::vec3(-2.0f, 0.0f, -20.0f));
+		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+		model = glm::rotate(model, 90* toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		Blackhawk_M.RenderModel();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Letrina.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-20.0f, -1.0f, 3.0f));
+		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Cartel.RenderModel();
 
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, -2.5f, -0.1f));
-		//model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		model = glm::translate(model, glm::vec3(0.0f, 5.1f, -0.1f));
+		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		Camino_M.RenderModel();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		House.RenderModel();
 
 		//Agave ¿qué sucede si lo renderizan antes del coche y de la pista?
 		model = glm::mat4(1.0);
