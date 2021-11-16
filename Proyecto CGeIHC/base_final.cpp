@@ -62,6 +62,7 @@ Model Pinocchio;
 Model House;
 Model Letrina;
 Model Cartel;
+Model Burro;
 
 Skybox skybox;
 
@@ -285,6 +286,7 @@ int main()
 	House.LoadModel("Models/house.obj");
 	Cartel = Model();
 	Cartel.LoadModel("Models/cartel.obj");
+	Burro.LoadModel("Models/Donkey.obj");
 
 	//luz direccional, sólo 1 y siempre debe de existir
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f, 
@@ -438,6 +440,13 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		House.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-10.0f, -1.7f, -0.1f));
+		model = glm::scale(model, glm::vec3(0.15f, 0.15f, 0.15f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Burro.RenderModel();
 
 		//Agave ¿qué sucede si lo renderizan antes del coche y de la pista?
 		model = glm::mat4(1.0);
