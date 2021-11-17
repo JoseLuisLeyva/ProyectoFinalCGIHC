@@ -64,6 +64,8 @@ Model Letrina;
 Model Cartel;
 Model Burro;
 Model Silla;
+Model puss;
+
 
 
 Skybox skybox;
@@ -292,6 +294,13 @@ int main()
 	Burro.LoadModel("Models/Donkey.obj");
 	Silla = Model();
 	Silla.LoadModel("Models/Chair.obj");
+	puss = Model();
+	puss.LoadModel("Models/puss.obj");
+
+
+
+
+	
 
 
 	//luz direccional, sólo 1 y siempre debe de existir
@@ -460,6 +469,15 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Silla.RenderModel();
+
+		
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(10.0, 1.1f, -5.5f));
+		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		puss.RenderModel();
+
+
 		//Agave ¿qué sucede si lo renderizan antes del coche y de la pista?
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-10.0f, -1.7f, -2.0f));
