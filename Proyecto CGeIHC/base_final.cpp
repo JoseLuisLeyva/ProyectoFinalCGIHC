@@ -63,6 +63,8 @@ Model House;
 Model Letrina;
 Model Cartel;
 Model Burro;
+Model Silla;
+
 
 Skybox skybox;
 
@@ -286,7 +288,11 @@ int main()
 	House.LoadModel("Models/house.obj");
 	Cartel = Model();
 	Cartel.LoadModel("Models/cartel.obj");
+	Burro = Model();
 	Burro.LoadModel("Models/Donkey.obj");
+	Silla = Model();
+	Silla.LoadModel("Models/Chair.obj");
+
 
 	//luz direccional, sólo 1 y siempre debe de existir
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f, 
@@ -448,9 +454,15 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Burro.RenderModel();
 
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-10.0f, -0.7f, -0.1f));
+		model = glm::scale(model, glm::vec3(0.0015f, 0.0015f, 0.0015f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Silla.RenderModel();
 		//Agave ¿qué sucede si lo renderizan antes del coche y de la pista?
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, -1.7f, -2.0f));
+		model = glm::translate(model, glm::vec3(-10.0f, -1.7f, -2.0f));
 		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		//blending: transparencia o traslucidez
