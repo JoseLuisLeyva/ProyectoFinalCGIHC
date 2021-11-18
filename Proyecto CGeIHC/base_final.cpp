@@ -61,12 +61,14 @@ SpotLight spotLights[MAX_SPOT_LIGHTS];
 Model Jengibre;
 Model Pinocchio;
 Model House;
+Model puerta;
 Model Letrina;
 Model Cartel;
 Model Burro;
 Model Silla;
 Model puss;
 Model fiona;
+Model interior;
 
 
 
@@ -289,7 +291,7 @@ int main()
 	Letrina = Model();
 	Letrina.LoadModel("Models/letrina.obj");
 	House = Model();
-	House.LoadModel("Models/house.obj");
+	House.LoadModel("Models/casafinal.obj");
 	Cartel = Model();
 	Cartel.LoadModel("Models/cartel.obj");
 	Burro = Model();
@@ -300,6 +302,10 @@ int main()
 	puss.LoadModel("Models/puss.obj");
 	fiona = Model();
 	fiona.LoadModel("Models/fiona.obj");
+	puerta = Model();
+	puerta.LoadModel("Models/casapuerta.obj");
+	interior = Model();
+	interior.LoadModel("Models/interior.obj");
 
 
 
@@ -455,10 +461,24 @@ int main()
 
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 5.1f, -0.1f));
-		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
+		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		House.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 5.1f, -0.1f));
+		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		puerta.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 5.1f, -0.1f));
+		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		interior.RenderModel();
 
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-10.0f, -1.7f, -0.1f));
