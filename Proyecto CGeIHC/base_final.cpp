@@ -65,6 +65,7 @@ Model Cartel;
 Model Burro;
 Model Silla;
 Model puss;
+Model fiona;
 
 
 
@@ -296,6 +297,8 @@ int main()
 	Silla.LoadModel("Models/Chair.obj");
 	puss = Model();
 	puss.LoadModel("Models/puss.obj");
+	fiona = Model();
+	fiona.LoadModel("Models/fiona.obj");
 
 
 
@@ -470,12 +473,17 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Silla.RenderModel();
 
-		
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(10.0, 1.1f, -5.5f));
-		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+		model = glm::scale(model, glm::vec3(0.25f, 0.25f, 0.25f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puss.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(15.0, 1.1f, -10.5f));
+		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		fiona.RenderModel();
 
 
 		//Agave ¿qué sucede si lo renderizan antes del coche y de la pista?
