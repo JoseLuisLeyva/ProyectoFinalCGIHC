@@ -18,6 +18,11 @@ Práctica: Animación Sencilla y animación compleja
 #include <glm.hpp>
 #include <gtc\matrix_transform.hpp>
 #include <gtc\type_ptr.hpp>
+
+#include <irrklang/irrKlang.h>
+//using namespace irrklang;
+
+
 //para probar el importer
 //#include<assimp/Importer.hpp>
 
@@ -265,11 +270,15 @@ void CreateShaders()
 	shaderList.push_back(*shader1);
 }
 
+
+
+irrklang::ISoundEngine* SoundEngine = irrklang::createIrrKlangDevice();
 int main() 
 {
+	
 	mainWindow = Window(1366, 768); // 1280, 1024 or 1024, 768
 	mainWindow.Initialise();
-
+	
 	CreateObjects();
 	CrearCubo();
 	CreateShaders();
@@ -372,9 +381,14 @@ int main()
 	rotllanta = 0.0f;
 	rotllantaOffset = 10.0f;
 
+	SoundEngine->play2D("audio/Shrek.wav", true);
+
 	//Loop mientras no se cierra la ventana
 	while (!mainWindow.getShouldClose())
 	{
+		
+		
+		//SoundEngine->play2D("audio/bleep.mp3", true);
 		GLfloat now = glfwGetTime();
 		deltaTime = now - lastTime;
 		lastTime = now;
