@@ -47,6 +47,7 @@ float movOffset;
 float rotllanta;
 float rotllantaOffset;
 bool avanza;
+bool dia  = false;
 Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
@@ -78,7 +79,7 @@ Model Pinonevado;
 
 
 Skybox skybox;
-
+GLfloat Tiempo = 0.0f;
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 
@@ -270,7 +271,35 @@ void CreateShaders()
 	shaderList.push_back(*shader1);
 }
 
-
+void DiaNoche()
+{
+	if (dia == false) {
+		glm::vec3 posblackhawk = glm::vec3(2.0f, 0.0f, 0.0f);
+		std::vector<std::string> skyboxFaces;
+		skyboxFaces.push_back("Textures/Skybox/posx-n.tga");
+		skyboxFaces.push_back("Textures/Skybox/negx-n.tga");
+		skyboxFaces.push_back("Textures/Skybox/negy-n.tga");
+		skyboxFaces.push_back("Textures/Skybox/posy-n.tga");
+		skyboxFaces.push_back("Textures/Skybox/posz-n.tga");
+		skyboxFaces.push_back("Textures/Skybox/negz-n.tga");
+		skybox = Skybox(skyboxFaces);
+		dia = true;
+		return;
+	}
+	else {
+		glm::vec3 posblackhawk = glm::vec3(2.0f, 0.0f, 0.0f);
+		std::vector<std::string> skyboxFaces;
+		skyboxFaces.push_back("Textures/Skybox/posx.tga");
+		skyboxFaces.push_back("Textures/Skybox/negx.tga");
+		skyboxFaces.push_back("Textures/Skybox/negy.tga");
+		skyboxFaces.push_back("Textures/Skybox/posy.tga");
+		skyboxFaces.push_back("Textures/Skybox/posz.tga");
+		skyboxFaces.push_back("Textures/Skybox/negz.tga");
+		skybox = Skybox(skyboxFaces);
+		dia = false;
+	}
+	return;
+}
 
 irrklang::ISoundEngine* SoundEngine = irrklang::createIrrKlangDevice();
 int main() 
@@ -361,12 +390,12 @@ int main()
 	glm::vec3 posblackhawk = glm::vec3(2.0f, 0.0f, 0.0f);
 
 	std::vector<std::string> skyboxFaces;
-	skyboxFaces.push_back("Textures/Skybox/posx-n.tga");
-	skyboxFaces.push_back("Textures/Skybox/negx-n.tga");
-	skyboxFaces.push_back("Textures/Skybox/negy-n.tga");
-	skyboxFaces.push_back("Textures/Skybox/posy-n.tga");
-	skyboxFaces.push_back("Textures/Skybox/posz-n.tga");
-	skyboxFaces.push_back("Textures/Skybox/negz-n.tga");
+	skyboxFaces.push_back("Textures/Skybox/posx.tga");
+	skyboxFaces.push_back("Textures/Skybox/negx.tga");
+	skyboxFaces.push_back("Textures/Skybox/negy.tga");
+	skyboxFaces.push_back("Textures/Skybox/posy.tga");
+	skyboxFaces.push_back("Textures/Skybox/posz.tga");
+	skyboxFaces.push_back("Textures/Skybox/negz.tga");
 
 
 	skybox = Skybox(skyboxFaces);
@@ -392,6 +421,13 @@ int main()
 		GLfloat now = glfwGetTime();
 		deltaTime = now - lastTime;
 		lastTime = now;
+		Tiempo += deltaTime;
+		if (Tiempo > 30) {
+			DiaNoche();
+			Tiempo = 0;
+
+		}
+		printf("tiempo: %f\n",Tiempo);
 		if (movCoche < 5.0f)
 		{
 			movCoche += movOffset * deltaTime;
