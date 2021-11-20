@@ -1205,7 +1205,69 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		fiona.RenderModel();
 
-		
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-5.0, 0.25f, -10.1f));
+		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		regalos.RenderModel();
+
+		//SHREK jerarquizado
+		//Cuerpo
+		model = glm::mat4(1.0);
+		model = matrizauxiliarshrek;
+		model = glm::translate(model, glm::vec3(25.0f + mainWindow.getmueveshrekX(), 5.1f, 
+												-15.5f + mainWindow.getmueveshrekZ()));
+		matrizauxiliarshrek = model;
+		model = glm::scale(model, glm::vec3(3.1f, 3.1f, 3.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		shrekcuepo.RenderModel();
+
+		//Brazo derecho
+		model = glm::mat4(1.0);
+		model = matrizauxiliarshrek;
+		model = glm::translate(model, glm::vec3(0.0, 0.0f, 0.0f));
+		matrizauxiliarshrek = model;
+		model = glm::scale(model, glm::vec3(3.1f, 3.1f, 3.1f));
+	/*	model = glm::rotate(model, 270 * toRadians + glm::radians(mainWindow.getrotabrazoder()),
+			glm::vec3(0.0f, 0.0f, 1.0f));*/
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		shrekmanoder.RenderModel();
+
+		//Brazo izquierdo
+		model = glm::mat4(1.0);
+		model = matrizauxiliarshrek;
+		model = glm::translate(model, glm::vec3(0.0, 0.0f, 0.0f));
+		matrizauxiliarshrek = model;
+		model = glm::scale(model, glm::vec3(3.1f, 3.1f, 3.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		shrekmanoizq.RenderModel();
+
+		//Parte baja del pantalon
+		model = glm::mat4(1.0);
+		model = matrizauxiliarshrek;
+		model = glm::translate(model, glm::vec3(0.0, 0.0f, 0.0f));
+		matrizauxiliarshrek = model;
+		model = glm::scale(model, glm::vec3(3.1f, 3.1f, 3.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		shrekpantbajo.RenderModel();
+
+		//Pierna derecha
+		model = glm::mat4(1.0);
+		model = matrizauxiliarshrek;
+		model = glm::translate(model, glm::vec3(0.0, 0.0f, 0.0f));
+		matrizauxiliarshrek = model;
+		model = glm::scale(model, glm::vec3(3.1f, 3.1f, 3.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		shrekpieder.RenderModel();
+
+		//Pierna izquierda
+		model = glm::mat4(1.0);
+		model = matrizauxiliarshrek;
+		model = glm::translate(model, glm::vec3(0.0, 0.0f, 0.0f));
+		matrizauxiliarshrek = model;
+		model = glm::scale(model, glm::vec3(3.1f, 3.1f, 3.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		shrekpieizq.RenderModel();
 
 
 		//Agave ¿qué sucede si lo renderizan antes del coche y de la pista?

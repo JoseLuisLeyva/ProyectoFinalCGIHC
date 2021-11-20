@@ -19,6 +19,8 @@ public:
 	GLfloat gethelicesy() { return helicesy; }
 	GLfloat getmuevehx() { return muevehx; }
 	GLfloat getmuevehy() { return muevehy; }
+	GLfloat getmueveshrekX() { return mueveshrekX; }
+	GLfloat getmueveshrekZ() { return mueveshrekZ; }
 	bool getShouldClose() {
 		return  glfwWindowShouldClose(mainWindow);}
 	bool* getsKeys() { return keys; }
@@ -31,7 +33,7 @@ private:
 	bool keys[1024];
 	GLint bufferWidth, bufferHeight;
 	void createCallbacks();
-	GLfloat lastX;
+	GLfloat lastX,mueveshrekX,mueveshrekZ;
 	GLfloat lastY;
 	GLfloat xChange;
 	GLfloat yChange;
