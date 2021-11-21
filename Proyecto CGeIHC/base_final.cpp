@@ -1,6 +1,6 @@
 /*
 Semestre 2022-1
-Práctica: Animación Sencilla y animación compleja
+Proyacto Final
 */
 //para cargar imagen
 //cometario commit
@@ -37,6 +37,7 @@ Práctica: Animación Sencilla y animación compleja
 #include "PointLight.h"
 #include "Material.h"
 
+#include "Sphere.h"
 #include"Model.h"
 #include "Skybox.h"
 #include"SpotLight.h"
@@ -52,7 +53,7 @@ Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
 Camera camera;
-
+float reproduciranimacion, habilitaranimacion, guardoFrame, reinicioFrame, ciclo, ciclo2, contador = 0;
 Texture pisoTexture;
 Texture Tagave;
 //materiales
@@ -79,9 +80,16 @@ Model Pinonevado;
 
 
 Skybox skybox;
+Sphere cabeza = Sphere(0.5, 20, 20);
 GLfloat Tiempo = 0.0f;
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
+
+static double limitFPS = 1.0 / 60.0;
+
+//void my_input(GLFWwindow *window);
+void inputKeyframes(bool* keys);
+
 
 // Vertex Shader
 //comentario
@@ -300,7 +308,113 @@ void DiaNoche()
 	}
 	return;
 }
+///////////////////////////////KEYFRAMES/////////////////////
 
+
+bool animacion = false;
+
+
+
+//NEW// Keyframes
+float posXburro = 2.0, posYburro = -2.0, posZburro = -1.0;
+float	movBurro_x = 0.0f, movBurro_y = 0.0f, movBurro_z = 0.0f;
+float giroBurro = 0;
+
+#define MAX_FRAMES 30
+int i_max_steps = 90;
+int i_curr_steps = 28;
+typedef struct _frame
+{
+	//Variables para GUARDAR Key Frames
+	float movBurro_x;		//Variable para PosicionX
+	float movBurro_y;		//Variable para PosicionY
+	float movBurro_z;
+
+	float movBurro_xInc;		//Variable para IncrementoX
+	float movBurro_yInc;		//Variable para IncrementoY
+	float movBurro_zInc;		//Variable para IncrementoZ
+	float giroBurro;
+	float giroBurroInc;
+}FRAME;
+
+FRAME KeyFrame[MAX_FRAMES];
+int FrameIndex = 28;			//introducir datos
+bool play = false;
+int playIndex = 0;
+
+void saveFrame(void)
+{
+
+	printf("frameindex %d\n", FrameIndex);
+
+
+	KeyFrame[FrameIndex].movBurro_x = movBurro_x;
+	KeyFrame[FrameIndex].movBurro_y = movBurro_y;
+	KeyFrame[FrameIndex].movBurro_z = movBurro_z;
+	KeyFrame[FrameIndex].giroBurro = giroBurro;
+
+	FrameIndex++;
+}
+
+void resetElements(void)
+{
+
+	movBurro_x = KeyFrame[0].movBurro_x;
+	movBurro_y = KeyFrame[0].movBurro_y;
+	movBurro_z = KeyFrame[0].movBurro_z;
+	giroBurro = KeyFrame[0].giroBurro;
+}
+
+void interpolation(void)
+{
+	KeyFrame[playIndex].movBurro_xInc = (KeyFrame[playIndex + 1].movBurro_x - KeyFrame[playIndex].movBurro_x) / i_max_steps;
+	KeyFrame[playIndex].movBurro_yInc = (KeyFrame[playIndex + 1].movBurro_y - KeyFrame[playIndex].movBurro_y) / i_max_steps;
+	KeyFrame[playIndex].movBurro_zInc = (KeyFrame[playIndex + 1].movBurro_z - KeyFrame[playIndex].movBurro_z) / i_max_steps;
+	KeyFrame[playIndex].giroBurroInc = (KeyFrame[playIndex + 1].giroBurro - KeyFrame[playIndex].giroBurro) / i_max_steps;
+
+}
+
+
+void animate(void)
+{
+	//Movimiento del objeto
+	if (play)
+	{
+		if (i_curr_steps >= i_max_steps) //end of animation between frames?
+		{
+			playIndex++;
+			printf("playindex : %d\n", playIndex);
+			if (playIndex > FrameIndex - 2)	//end of total animation?
+			{
+				printf("Frame index= %d\n", FrameIndex);
+				printf("termina anim\n");
+				playIndex = 0;
+				play = false;
+			}
+			else //Next frame interpolations
+			{
+				//printf("entro aquí\n");
+				i_curr_steps = 0; //Reset counter
+				//Interpolation
+				interpolation();
+			}
+		}
+		else
+		{
+			//printf("se quedó aqui\n");
+			//printf("max steps: %f", i_max_steps);
+			//Draw animation
+			movBurro_x += KeyFrame[playIndex].movBurro_xInc;
+			movBurro_y += KeyFrame[playIndex].movBurro_yInc;
+			movBurro_z += KeyFrame[playIndex].movBurro_zInc;
+			giroBurro += KeyFrame[playIndex].giroBurroInc;
+			i_curr_steps++;
+		}
+
+	}
+}
+
+/* FIN KEYFRAMES*/
 irrklang::ISoundEngine* SoundEngine = irrklang::createIrrKlangDevice();
 int main() 
 {
@@ -410,6 +524,159 @@ int main()
 	rotllanta = 0.0f;
 	rotllantaOffset = 10.0f;
 
+	//KEYFRAMES DECLARADOS INICIALES
+
+	KeyFrame[0].movBurro_x = 0.0f;
+	KeyFrame[0].movBurro_y = 0.0f;
+	KeyFrame[0].movBurro_z = 0.0f;
+	KeyFrame[0].giroBurro = 0;
+
+
+	KeyFrame[1].movBurro_x = 4.0f;
+	KeyFrame[1].movBurro_y = 0.0f;
+	KeyFrame[1].movBurro_z = 0.0f;
+	KeyFrame[1].giroBurro = 0;
+
+
+	KeyFrame[2].movBurro_x = 8.0f;
+	KeyFrame[2].movBurro_y = 0.0f;
+	KeyFrame[2].movBurro_z = 0.0f;
+	KeyFrame[2].giroBurro = 0;
+
+	KeyFrame[3].movBurro_x = 10.0f;
+	KeyFrame[3].movBurro_y = 0.0f;
+	KeyFrame[3].movBurro_z = 0.0f;
+	KeyFrame[3].giroBurro =  0.0f;
+
+	KeyFrame[4].movBurro_x = 12.0f;
+	KeyFrame[4].movBurro_y = 0.0f;
+	KeyFrame[4].movBurro_z = -2.0f;
+	KeyFrame[4].giroBurro = 30.0f;
+
+	KeyFrame[5].movBurro_x = 14.0f;
+	KeyFrame[5].movBurro_y = 0.0f;
+	KeyFrame[5].movBurro_z = -4.0f;
+	KeyFrame[5].giroBurro = 60.0f;
+
+	KeyFrame[6].movBurro_x = 16.0f;
+	KeyFrame[6].movBurro_y = 0.0f;
+	KeyFrame[6].movBurro_z = -6.0f;
+	KeyFrame[6].giroBurro = 90.0f;
+
+	KeyFrame[7].movBurro_x = 16.0f;
+	KeyFrame[7].movBurro_y = 0.0f;
+	KeyFrame[7].movBurro_z = -10.0f;
+	KeyFrame[7].giroBurro =  90.0f;
+
+	KeyFrame[8].movBurro_x = 16.0f;
+	KeyFrame[8].movBurro_y = 0.0f;
+	KeyFrame[8].movBurro_z = -14.0f;
+	KeyFrame[8].giroBurro = 90.0f;
+
+	KeyFrame[9].movBurro_x = 14.0f;
+	KeyFrame[9].movBurro_y = 0.0f;
+	KeyFrame[9].movBurro_z = -16.0f;
+	KeyFrame[9].giroBurro = 120.0f;
+
+	KeyFrame[10].movBurro_x = 12.0f;
+	KeyFrame[10].movBurro_y = 0.0f;
+	KeyFrame[10].movBurro_z = -18.0f;
+	KeyFrame[10].giroBurro = 150.0f;
+
+	KeyFrame[11].movBurro_x = 10.0f;
+	KeyFrame[11].movBurro_y = 0.0f;
+	KeyFrame[11].movBurro_z = -20.0f;
+	KeyFrame[11].giroBurro = 180.0f;
+
+	KeyFrame[12].movBurro_x = 6.0f;
+	KeyFrame[12].movBurro_y = 0.0f;
+	KeyFrame[12].movBurro_z = -20.0f;
+	KeyFrame[12].giroBurro = 180.0f;
+
+	KeyFrame[13].movBurro_x = 2.0f;
+	KeyFrame[13].movBurro_y = 0.0f;
+	KeyFrame[13].movBurro_z = -20.0f;
+	KeyFrame[13].giroBurro = 180.0f;
+
+	KeyFrame[14].movBurro_x = -2.0f;
+	KeyFrame[14].movBurro_y = 0.0f;
+	KeyFrame[14].movBurro_z = -20.0f;
+	KeyFrame[14].giroBurro = 180.0f;
+
+	KeyFrame[15].movBurro_x = -6.0f;
+	KeyFrame[15].movBurro_y = 0.0f;
+	KeyFrame[15].movBurro_z = -20.0f;
+	KeyFrame[15].giroBurro = 180.0f;
+
+	KeyFrame[16].movBurro_x = -10.0f;
+	KeyFrame[16].movBurro_y = 0.0f;
+	KeyFrame[16].movBurro_z = -20.0f;
+	KeyFrame[16].giroBurro = 180.0f;
+
+	KeyFrame[17].movBurro_x = -14.0f;
+	KeyFrame[17].movBurro_y = 0.0f;
+	KeyFrame[17].movBurro_z = -20.0f;
+	KeyFrame[17].giroBurro = 180.0f;
+
+	KeyFrame[18].movBurro_x = -16.0f;
+	KeyFrame[18].movBurro_y = 0.0f;
+	KeyFrame[18].movBurro_z = -18.0f;
+	KeyFrame[18].giroBurro = 210.0f;
+
+	KeyFrame[19].movBurro_x = -18.0f;
+	KeyFrame[19].movBurro_y = 0.0f;
+	KeyFrame[19].movBurro_z = -16.0f;
+	KeyFrame[19].giroBurro = 240.0f;
+
+	KeyFrame[20].movBurro_x = -20.0f;
+	KeyFrame[20].movBurro_y = 0.0f;
+	KeyFrame[20].movBurro_z = -14.0f;
+	KeyFrame[20].giroBurro = 270.0f;
+
+	KeyFrame[21].movBurro_x = -20.0f;
+	KeyFrame[21].movBurro_y = 0.0f;
+	KeyFrame[21].movBurro_z = -12.0f;
+	KeyFrame[21].giroBurro = 270.0f;
+
+	KeyFrame[22].movBurro_x = -20.0f;
+	KeyFrame[22].movBurro_y = 0.0f;
+	KeyFrame[22].movBurro_z = -8.0f;
+	KeyFrame[22].giroBurro = 270.0f;
+
+	KeyFrame[23].movBurro_x = -20.0f;
+	KeyFrame[23].movBurro_y = 0.0f;
+	KeyFrame[23].movBurro_z = -6.0f;
+	KeyFrame[23].giroBurro = 270.0f;
+
+	KeyFrame[24].movBurro_x = -18.0f;
+	KeyFrame[24].movBurro_y = 0.0f;
+	KeyFrame[24].movBurro_z = -4.0f;
+	KeyFrame[24].giroBurro = 300.0f;
+
+	KeyFrame[25].movBurro_x = -16.0f;
+	KeyFrame[25].movBurro_y = 0.0f;
+	KeyFrame[25].movBurro_z = -2.0f;
+	KeyFrame[25].giroBurro = 330.0f;
+
+	KeyFrame[26].movBurro_x = -14.0f;
+	KeyFrame[26].movBurro_y = 0.0f;
+	KeyFrame[26].movBurro_z = 0.0f;
+	KeyFrame[26].giroBurro = 360.0f;
+
+	KeyFrame[27].movBurro_x = -8.0f;
+	KeyFrame[27].movBurro_y = 0.0f;
+	KeyFrame[27].movBurro_z = 0.0f;
+	KeyFrame[27].giroBurro = 360.0f;
+
+	KeyFrame[27].movBurro_x = 0.0f;
+	KeyFrame[27].movBurro_y = 0.0f;
+	KeyFrame[27].movBurro_z = -0.0f;
+	KeyFrame[27].giroBurro = 360.0f;
+
+	
+	//Agregar Kefyrame[5] para que el avión regrese al inicio
+
+
 	SoundEngine->play2D("audio/Shrek.wav", true);
 
 	//Loop mientras no se cierra la ventana
@@ -427,7 +694,7 @@ int main()
 			Tiempo = 0;
 
 		}
-		printf("tiempo: %f\n",Tiempo);
+
 		if (movCoche < 5.0f)
 		{
 			movCoche += movOffset * deltaTime;
@@ -440,6 +707,9 @@ int main()
 
 		camera.keyControl(mainWindow.getsKeys(), deltaTime);
 		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
+		//para keyframes
+		inputKeyframes(mainWindow.getsKeys());
+		animate();
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1180,8 +1450,12 @@ int main()
 		interior.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-10.0f, -1.7f, -0.1f));
+		posblackhawk = glm::vec3(posXburro + movBurro_x, posYburro + movBurro_y, posZburro + movBurro_z);
+		model = glm::translate(model, posblackhawk);
+		//model = glm::translate(model, glm::vec3(-10.0f, -1.7f, -0.1f));
 		model = glm::scale(model, glm::vec3(0.15f, 0.15f, 0.15f));
+		model = glm::rotate(model, giroBurro * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Burro.RenderModel();
@@ -1204,7 +1478,7 @@ int main()
 		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		fiona.RenderModel();
-
+/*
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-5.0, 0.25f, -10.1f));
 		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
@@ -1229,7 +1503,7 @@ int main()
 		matrizauxiliarshrek = model;
 		model = glm::scale(model, glm::vec3(3.1f, 3.1f, 3.1f));
 	/*	model = glm::rotate(model, 270 * toRadians + glm::radians(mainWindow.getrotabrazoder()),
-			glm::vec3(0.0f, 0.0f, 1.0f));*/
+			glm::vec3(0.0f, 0.0f, 1.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shrekmanoder.RenderModel();
 
@@ -1267,7 +1541,7 @@ int main()
 		matrizauxiliarshrek = model;
 		model = glm::scale(model, glm::vec3(3.1f, 3.1f, 3.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		shrekpieizq.RenderModel();
+		shrekpieizq.RenderModel(); */
 
 
 		//Agave ¿qué sucede si lo renderizan antes del coche y de la pista?
@@ -1290,4 +1564,81 @@ int main()
 	}
 
 	return 0;
+}
+
+void inputKeyframes(bool* keys)
+{
+	if (keys[GLFW_KEY_SPACE])
+	{
+		if (reproduciranimacion < 1)
+		{
+			if (play == false && (FrameIndex > 1))
+			{
+				resetElements();
+				//First Interpolation				
+				interpolation();
+				play = true;
+				playIndex = 0;
+				i_curr_steps = 0;
+				reproduciranimacion++;
+				printf("\n presiona 0 para habilitar reproducir de nuevo la animación'\n");
+				habilitaranimacion = 0;
+
+			}
+			else
+			{
+				play = false;
+			}
+		}
+	}
+	if (keys[GLFW_KEY_0])
+	{
+		if (habilitaranimacion < 1)
+		{
+			reproduciranimacion = 0;
+		}
+	}
+
+	if (keys[GLFW_KEY_L])
+	{
+		if (guardoFrame < 1)
+		{
+			saveFrame();
+			printf("movBurro_x es: %f\n", movBurro_x);
+			//printf("movBurro_y es: %f\n", movBurro_y);
+			printf(" \npresiona P para habilitar guardar otro frame'\n");
+			guardoFrame++;
+			reinicioFrame = 0;
+		}
+	}
+	if (keys[GLFW_KEY_P])
+	{
+		if (reinicioFrame < 1)
+		{
+			guardoFrame = 0;
+		}
+	}
+
+
+	if (keys[GLFW_KEY_1])
+	{
+		if (ciclo < 1)
+		{
+			//printf("movBurro_x es: %f\n", movBurro_x);
+			movBurro_x += 1.0f;
+			printf("\n movBurro_x es: %f\n", movBurro_x);
+			ciclo++;
+			ciclo2 = 0;
+			printf("\n reinicia con 2\n");
+		}
+
+	}
+	if (keys[GLFW_KEY_2])
+	{
+		if (ciclo2 < 1)
+		{
+			ciclo = 0;
+		}
+	}
+
 }
