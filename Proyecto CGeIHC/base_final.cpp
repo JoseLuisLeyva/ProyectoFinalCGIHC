@@ -1,9 +1,7 @@
 /*
 Semestre 2022-1
-Proyacto Final
+Proyeco final
 */
-//para cargar imagen
-//cometario commit
 
 #define STB_IMAGE_IMPLEMENTATION
 
@@ -19,9 +17,8 @@ Proyacto Final
 #include <gtc\matrix_transform.hpp>
 #include <gtc\type_ptr.hpp>
 
-#include <irrklang/irrKlang.h>
-//using namespace irrklang;
-
+//Biblioteca de audio 
+#include <irrklang/irrKlang.h> 
 
 //para probar el importer
 //#include<assimp/Importer.hpp>
@@ -286,7 +283,8 @@ void CreateShaders()
 	shaderList.push_back(*shader1);
 }
 
-void DiaNoche()
+int banderaDia;
+int DiaNoche()
 {
 	if (dia == false) {
 		glm::vec3 posblackhawk = glm::vec3(2.0f, 0.0f, 0.0f);
@@ -299,7 +297,7 @@ void DiaNoche()
 		skyboxFaces.push_back("Textures/Skybox/negz-n.tga");
 		skybox = Skybox(skyboxFaces);
 		dia = true;
-		return;
+		banderaDia = 1;
 	}
 	else {
 		glm::vec3 posblackhawk = glm::vec3(2.0f, 0.0f, 0.0f);
@@ -312,8 +310,9 @@ void DiaNoche()
 		skyboxFaces.push_back("Textures/Skybox/negz.tga");
 		skybox = Skybox(skyboxFaces);
 		dia = false;
+		banderaDia = -1;
 	}
-	return;
+	return banderaDia;
 }
 ///////////////////////////////KEYFRAMES/////////////////////
 
@@ -422,7 +421,10 @@ void animate(void)
 }
 
 /* FIN KEYFRAMES*/
-irrklang::ISoundEngine* SoundEngine = irrklang::createIrrKlangDevice();
+
+//Audio
+irrklang:: ISoundEngine* engine = irrklang::createIrrKlangDevice();
+
 int main() 
 {
 	
@@ -432,6 +434,12 @@ int main()
 	CreateObjects();
 	CrearCubo();
 	CreateShaders();
+
+	//Audio ambiental
+	irrklang::ISound* music = engine->play3D("audio/fondoc.wav",
+		irrklang::vec3df(1.0, 1.0, 1.0), true, false, true);
+	if (music)
+		music->setMinDistance(1.0f);
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 5.0f, 0.5f);
 
@@ -494,10 +502,15 @@ int main()
 //contador de luces puntuales
 	unsigned int pointLightCount = 0;
 	//Declaración de primer luz puntual
-	pointLights[0] = PointLight(1.0f, 0.0f, 0.0f,
-								0.0f, 1.0f,
-								2.0f, 1.5f,1.5f,
+	pointLights[0] = PointLight(1.0f, 1.0f, 0.0f,
+								1.0f, 1.0f,
+								-2.0f, 1.0f,-10.5f,
 								0.3f, 0.2f, 0.1f);
+	pointLightCount++;
+	pointLights[1] = PointLight(1.0f, 1.0f, 0.0f,
+		0.0f, 1.0f,
+		20.0f, 1.5f, -15.5f,
+		0.3f, 0.2f, 0.1f);
 	pointLightCount++;
 	
 	unsigned int spotLightCount = 0;
@@ -511,7 +524,7 @@ int main()
 	spotLightCount++;
 
 	//luz fija
-	spotLights[1] = SpotLight(0.0f, 0.0f, 1.0f,
+	spotLights[1] = SpotLight(1.0f, 0.0f, 1.0f,
 		0.0f, 2.0f,
 		10.0f, 0.0f, 0.0f,
 		0.0f, -5.0f, 0.0f,
@@ -697,18 +710,16 @@ int main()
 	//Agregar Kefyrame[5] para que el avión regrese al inicio
 
 
-	SoundEngine->play2D("audio/Shrek.wav", true);
+	//SoundEngine->play2D("audio/Shrek.wav", true);
 
 	//Loop mientras no se cierra la ventana
 	while (!mainWindow.getShouldClose())
-	{
-		
-		
-		//SoundEngine->play2D("audio/bleep.mp3", true);
+	{	
 		GLfloat now = glfwGetTime();
 		deltaTime = now - lastTime;
 		lastTime = now;
 		Tiempo += deltaTime;
+
 		if (Tiempo > 30) {
 			DiaNoche();
 			Tiempo = 0;
@@ -721,6 +732,30 @@ int main()
 			
 		}
 		rotllanta += rotllantaOffset * deltaTime;
+
+		//Luces tipo puntual con prendido y apagado automatico
+		if (banderaDia > 0)
+		{
+			pointLightCount = 2;
+			shaderList[0].SetPointLights(pointLights, pointLightCount);
+		}
+		else
+		{
+			pointLightCount = 0;
+			shaderList[0].SetPointLights(pointLights, pointLightCount);
+		}
+
+		//SpotLight prendido y apagado con teclado
+		if (mainWindow.getluzPrendida() > 0)
+		{
+			spotLightCount = 2;
+			shaderList[0].SetSpotLights(spotLights, spotLightCount);
+		}
+		else
+		{
+			spotLightCount = 0;
+			shaderList[0].SetSpotLights(spotLights, spotLightCount);
+		}
 	
 		//Recibir eventos del usuario
 		glfwPollEvents();

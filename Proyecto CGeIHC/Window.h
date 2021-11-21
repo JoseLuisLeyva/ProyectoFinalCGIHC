@@ -19,6 +19,7 @@ public:
 	GLfloat gethelicesy() { return helicesy; }
 	GLfloat getmuevehx() { return muevehx; }
 	GLfloat getmuevehy() { return muevehy; }
+	GLfloat getluzPrendida() { return luzPrendida; }
 	GLfloat getmueveshrekX() { return mueveshrekX; }
 	GLfloat getmueveshrekZ() { return mueveshrekZ; }
 	bool getShouldClose() {
@@ -41,6 +42,7 @@ private:
 	GLfloat muevez;
 	GLfloat	llantaz;
 	GLfloat	helicesy;
+	GLfloat	luzPrendida;
 	GLfloat	muevehx;
 	GLfloat	muevehy;
 	bool mouseFirstMoved;
