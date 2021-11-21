@@ -77,6 +77,13 @@ Model puss;
 Model fiona;
 Model interior;
 Model Pinonevado;
+Model shrekcuepo;
+Model shrekmanoder;
+Model shrekmanoizq;
+Model shrekpantbajo;
+Model shrekpieizq;
+Model shrekpieder;
+Model regalos;
 
 
 Skybox skybox;
@@ -460,7 +467,20 @@ int main()
 	interior.LoadModel("Models/interior.obj");
 	Pinonevado = Model();
 	Pinonevado.LoadModel("Models/pinonevado.obj");
-
+	shrekcuepo = Model();
+	shrekcuepo.LoadModel("Models/shrekcuerpo.obj");
+	shrekmanoder = Model();
+	shrekmanoder.LoadModel("Models/shrekmanoder.obj");
+	shrekmanoizq = Model();
+	shrekmanoizq.LoadModel("Models/shrekmanoizq.obj");
+	shrekpantbajo = Model();
+	shrekpantbajo.LoadModel("Models/shrekpantbajo.obj");
+	shrekpieizq = Model();
+	shrekpieizq.LoadModel("Models/shrekpieizq.obj");
+	shrekpieder = Model();
+	shrekpieder.LoadModel("Models/shrekpieder.obj");
+	regalos = Model();
+	regalos.LoadModel("Models/giftboxes.obj");
 
 
 
