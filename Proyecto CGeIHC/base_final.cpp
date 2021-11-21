@@ -439,7 +439,7 @@ int main()
 	irrklang::ISound* music = engine->play3D("audio/fondoc.wav",
 		irrklang::vec3df(1.0, 1.0, 1.0), true, false, true);
 	if (music)
-		music->setMinDistance(1.0f);
+		music->setMinDistance(0.5f);
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 5.0f, 0.5f);
 
@@ -1632,6 +1632,8 @@ void inputKeyframes(bool* keys)
 				resetElements();
 				//First Interpolation				
 				interpolation();
+				irrklang::ISoundEngine* SoundEngine = irrklang::createIrrKlangDevice();
+				SoundEngine->play2D("audio/burro.wav", false);
 				play = true;
 				playIndex = 0;
 				i_curr_steps = 0;
