@@ -42,10 +42,15 @@ Sphere sp = Sphere(1.0, 20, 20);
 
 const float toRadians = 3.14159265f / 180.0f;
 const float PI = 3.14159265f;
-float movCoche;
+float movxShrek;
+float movyShrek;
+float movzShrek;
+float rotShrek;
+int avanzaS = 1;
+int patada = 1;
 float movOffset;
-float rotllanta;
-float rotllantaOffset;
+float rotpiernas = 0.0f;
+float rotpiernasOffset;
 bool avanza;
 bool dia  = false;
 Window mainWindow;
@@ -664,10 +669,7 @@ int main()
 		uniformSpecularIntensity = 0, uniformShininess = 0;
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 300.0f);
 	
-	movCoche = 0.0f;
-	movOffset = 0.5f;
-	rotllanta = 0.0f;
-	rotllantaOffset = 10.0f;
+
 
 	//KEYFRAMES DECLARADOS INICIALES
 
@@ -819,7 +821,13 @@ int main()
 	KeyFrame[27].giroBurro = 360.0f;
 
 	
-	//Agregar Kefyrame[5] para que el avión regrese al inicio
+	movxShrek = 0.0f;
+	movyShrek = 0.0f;
+	movzShrek = 0.0f;
+	rotShrek = 0.0f;
+	movOffset = 0.5f;
+	rotpiernasOffset = 10.0f;
+	float vuletaSherk = 0.0f;
 
 	sp.init(); //inicializar esfera
 	sp.load();//enviar la esfera al shader
@@ -833,18 +841,248 @@ int main()
 		lastTime = now;
 		Tiempo += deltaTime;
 
+		if (patada == 1) {
+			if (rotpiernas < 20) {
+				rotpiernas += movOffset * deltaTime * 50;
+			}
+			else { patada = 0; }
+		}
+		else {
+			if (rotpiernas > -20) {
+				rotpiernas -= movOffset * deltaTime * 50;
+			}
+			else { patada = 1; }
+
+		}
+
 		if (Tiempo > 30) {
 			DiaNoche();
 			Tiempo = 0;
 
 		}
+		//Animacion shrek
+				//animacion coche
+		if (mainWindow.getanimacion() == 1) {
+			printf("entro2");
+			avanzaS = 1;
+			rotShrek = 0;
+			movxShrek = 0.0f;
+			movzShrek = 0.0f;
+			movyShrek = 0.0f;
 
-		if (movCoche < 5.0f)
-		{
-			movCoche += movOffset * deltaTime;
-			
+			mainWindow.getanimacionr();
 		}
-		rotllanta += rotllantaOffset * deltaTime;
+		switch (avanzaS) {
+		case 1:
+			if (movzShrek > -28.0f)
+			{
+				movzShrek -= movOffset * deltaTime * 2;
+
+			}
+			else {
+				avanzaS = 2;
+			}
+			break;
+		case 2:
+			if (movzShrek > -31.0f) {
+				movzShrek -= movOffset * deltaTime * 2;
+				movxShrek -= movOffset * deltaTime;
+				rotShrek += movOffset * deltaTime * 20;
+
+				//vuletaCoche = -1 * 3 * cos(rotCoche * toRadians) + 3;
+			}
+			else {
+				avanzaS = 3;
+			}
+			break;
+		case 3:
+			if (movzShrek > -35.0f) {
+				movzShrek -= movOffset * deltaTime * 2;
+				if (rotShrek > 0.0f) {
+					rotShrek -= movOffset * deltaTime * 30;
+				}
+				//vuletaCoche = -1 * 3 * cos(rotCoche * toRadians) + 3;
+			}
+			else {
+				avanzaS = 4;
+			}
+			break;
+
+		case 4:
+			if (rotShrek > -160.0f) {
+				movxShrek += movOffset * deltaTime * 0.7;
+				rotShrek -= movOffset * deltaTime * 60;
+				vuletaSherk = 2 * sin(rotShrek * toRadians);
+			}
+			else {
+				avanzaS = 5;
+			}
+			break;
+
+		case 5:
+			if (movzShrek < -31.0f) {
+				movzShrek += movOffset * deltaTime * 2;
+				movxShrek -= movOffset * deltaTime;
+				if (rotShrek > -180.0f) {
+					rotShrek -= movOffset * deltaTime * 7;
+				}
+			}
+			else {
+				avanzaS = 6;
+			}
+			break;
+
+		case 6:
+			if (movzShrek < -27.0f) {
+				movzShrek += movOffset * deltaTime * 2;
+				movxShrek += movOffset * deltaTime;
+				if (rotShrek < -150.0f) {
+					rotShrek += movOffset * deltaTime * 7;
+				}
+			}
+			else {
+				avanzaS = 7;
+			}
+			break;
+		case 7:
+			if (movzShrek < -25.0f) {
+				movzShrek += movOffset * deltaTime * 2;
+				if (rotShrek > -200.0f) {
+					rotShrek -= movOffset * deltaTime * 60;
+				}
+			}
+			else {
+				avanzaS = 8;
+			}
+			break;
+		case 8:
+			if (movzShrek < -24.0f) {
+				movzShrek += movOffset * deltaTime * 2;
+				movxShrek -= movOffset * deltaTime;
+				if (rotShrek > -260.0f) {
+					rotShrek -= movOffset * deltaTime * 60;
+				}
+			}
+			else {
+				avanzaS = 9;
+			}
+			break;
+		case 9:
+			if (movxShrek > -27.0f) {
+				movzShrek -= movOffset * deltaTime * 0.56;
+				movxShrek -= movOffset * deltaTime * 2;
+				if (rotShrek > -285.0f) {
+					rotShrek -= movOffset * deltaTime * 50;
+				}
+			}
+			else {
+				avanzaS = 10;
+			}
+			break;
+		case 10:
+			if (movxShrek > -30.0f) {
+				movxShrek -= movOffset * deltaTime * 2;
+				if (rotShrek < -270.0f) {
+					rotShrek += movOffset * deltaTime * 50;
+				}
+			}
+			else {
+				avanzaS = 11;
+			}
+			break;
+
+		case 11:
+			if (movxShrek > -34.0f) {
+				movxShrek -= movOffset * deltaTime * 2;
+				movzShrek += movOffset * deltaTime * 2;
+				if (rotShrek < -230.0f) {
+					rotShrek += movOffset * deltaTime * 60;
+				}
+			}
+			else {
+				avanzaS = 12;
+				printf("z: %f", movzShrek);
+			}
+			break;
+
+		case 12:
+			if (movzShrek < -24.0f) {
+				movzShrek += movOffset * deltaTime * 2;
+				if (rotShrek < -180.0f) {
+					rotShrek += movOffset * deltaTime * 60;
+				}
+			}
+			else {
+				avanzaS = 13;
+			}
+			break;
+		case 13:
+			if (movzShrek < -22.0f) {
+				movzShrek += movOffset * deltaTime * 2;
+				movxShrek += movOffset * deltaTime * 2;
+				if (rotShrek < -150.0f) {
+					rotShrek += movOffset * deltaTime * 60;
+				}
+			}
+			else {
+				avanzaS = 14;
+			}
+			break;
+		case 14:
+			if (movxShrek < -4.0f) {
+				movzShrek += movOffset * deltaTime * 2;
+				movxShrek += movOffset * deltaTime * 2;
+				if (rotShrek < -130.0f) {
+					rotShrek += movOffset * deltaTime * 60;
+				}
+			}
+			else {
+				avanzaS = 15;
+			}
+			break;
+		case 15:
+			if (movxShrek < -2.0f) {
+				movxShrek += movOffset * deltaTime * 2;
+				if (rotShrek < -90.0f) {
+					rotShrek += movOffset * deltaTime * 70;
+				}
+			}
+			else {
+				avanzaS = 16;
+			}
+			break;
+		case 16:
+			if (movxShrek < 0.0f) {
+				movxShrek += movOffset * deltaTime * 2;
+				movzShrek -= movOffset * deltaTime * 2;
+				if (rotShrek < -45.0f) {
+					rotShrek += movOffset * deltaTime * 70;
+				}
+			}
+			else {
+				avanzaS = 17;
+				printf("movxShrek %f", movzShrek);
+			}
+			break;
+		case 17:
+			if (movzShrek > 0.0f) {
+				movzShrek -= movOffset * deltaTime * 2;
+				if (rotShrek < -45.0f) {
+					rotShrek += movOffset * deltaTime * 70;
+				}
+			}
+			else {
+				avanzaS = 1;
+				movxShrek = 0.0f;
+				movyShrek = 0.0f;
+				movzShrek = 0.0f;
+				rotShrek = 0.0f;
+				vuletaSherk = 0.0f;
+			}
+			break;
+
+
+		}
 
 		//Luces tipo puntual con prendido y apagado automatico
 		if (banderaDia > 0)
@@ -1133,21 +1371,21 @@ int main()
 
 		//modelaux = glm::mat4(1.0);
 		model = glm::mat4(1.0);
-		modelaux=model = glm::translate(model, glm::vec3(movCoche, -1.5f, 0.2f));
+		modelaux = model = glm::translate(model, glm::vec3(0.0f, -1.5f, 0.2f));
 		//modelaux = model;
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Jengibre.RenderModel();
-			model = modelaux;
-			model = glm::translate(model, glm::vec3(-1.0, -0.1f, 0.2f));
-			model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-			model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-			model = glm::rotate(model, rotllanta * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
-			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-			Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
-			Pinocchio.RenderModel();
+
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-1.0, -0.1f, 0.2f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Pinocchio.RenderModel();
 		
 		// exterior 
 		model = glm::mat4(1.0);
@@ -1864,7 +2102,7 @@ int main()
 		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		fiona.RenderModel();
-/*
+
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-5.0, 0.25f, -10.1f));
 		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
@@ -1873,12 +2111,17 @@ int main()
 
 		//SHREK jerarquizado
 		//Cuerpo
+		glm::mat4 matrizauxiliarshrek(1.0);
+		glm::mat4 matriz2(1.0);
+
 		model = glm::mat4(1.0);
 		model = matrizauxiliarshrek;
-		model = glm::translate(model, glm::vec3(25.0f + mainWindow.getmueveshrekX(), 5.1f, 
-												-15.5f + mainWindow.getmueveshrekZ()));
+		model = glm::translate(model, glm::vec3(-2.0f + mainWindow.getmueveshrekX()+movxShrek, -2.0f+movyShrek,
+												25.5f + mainWindow.getmueveshrekZ()+ movzShrek + vuletaSherk));
 		matrizauxiliarshrek = model;
 		model = glm::scale(model, glm::vec3(3.1f, 3.1f, 3.1f));
+		model = glm::rotate(model, (180 + rotShrek) * toRadians,
+			glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shrekcuepo.RenderModel();
 
@@ -1888,8 +2131,10 @@ int main()
 		model = glm::translate(model, glm::vec3(0.0, 0.0f, 0.0f));
 		matrizauxiliarshrek = model;
 		model = glm::scale(model, glm::vec3(3.1f, 3.1f, 3.1f));
-	/*	model = glm::rotate(model, 270 * toRadians + glm::radians(mainWindow.getrotabrazoder()),
-			glm::vec3(0.0f, 0.0f, 1.0f));
+		/*model = glm::rotate(model, 270 * toRadians + glm::radians(mainWindow.getrotabrazoder()),
+			glm::vec3(0.0f, 0.0f, 1.0f));*/
+		model = glm::rotate(model, (180 + rotShrek) * toRadians,
+			glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shrekmanoder.RenderModel();
 
@@ -1899,6 +2144,8 @@ int main()
 		model = glm::translate(model, glm::vec3(0.0, 0.0f, 0.0f));
 		matrizauxiliarshrek = model;
 		model = glm::scale(model, glm::vec3(3.1f, 3.1f, 3.1f));
+		model = glm::rotate(model, (180 + rotShrek) * toRadians,
+			glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shrekmanoizq.RenderModel();
 
@@ -1908,26 +2155,36 @@ int main()
 		model = glm::translate(model, glm::vec3(0.0, 0.0f, 0.0f));
 		matrizauxiliarshrek = model;
 		model = glm::scale(model, glm::vec3(3.1f, 3.1f, 3.1f));
+		model = glm::rotate(model, (180 + rotShrek) * toRadians,
+			glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shrekpantbajo.RenderModel();
 
 		//Pierna derecha
-		model = glm::mat4(1.0);
 		model = matrizauxiliarshrek;
-		model = glm::translate(model, glm::vec3(0.0, 0.0f, 0.0f));
-		matrizauxiliarshrek = model;
+		model = glm::translate(model, glm::vec3(0.0, 1.0f, 0.0f));
+		model = glm::rotate(model, (rotpiernas)*toRadians,
+			glm::vec3(cos(rotShrek * toRadians), 0.0f, -sin(rotShrek * toRadians)));
+		model = glm::rotate(model, (180 + rotShrek) * toRadians,
+			glm::vec3(0.0f, 1.0f, 0.0f));
+
+		model = glm::translate(model, glm::vec3(0.0, -1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(3.1f, 3.1f, 3.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		shrekpieder.RenderModel();
 
-		//Pierna izquierda
-		model = glm::mat4(1.0);
+		//Pierna izquierda		
 		model = matrizauxiliarshrek;
-		model = glm::translate(model, glm::vec3(0.0, 0.0f, 0.0f));
-		matrizauxiliarshrek = model;
+		model = glm::translate(model, glm::vec3(0.0, 1.0f, 0.0f));
+		model = glm::rotate(model, (-rotpiernas) * toRadians,
+			glm::vec3(cos(rotShrek * toRadians), 0.0f, -sin(rotShrek * toRadians)));
+		model = glm::rotate(model, (180 + rotShrek) * toRadians,
+			glm::vec3(0.0f, 1.0f, 0.0f));
+
+		model = glm::translate(model, glm::vec3(0.0, -1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(3.1f, 3.1f, 3.1f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		shrekpieizq.RenderModel(); */
+		shrekpieizq.RenderModel();
 
 
 		//Agave ¿qué sucede si lo renderizan antes del coche y de la pista?

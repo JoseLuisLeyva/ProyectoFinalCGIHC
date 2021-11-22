@@ -22,6 +22,8 @@ public:
 	GLfloat getluzPrendida() { return luzPrendida; }
 	GLfloat getmueveshrekX() { return mueveshrekX; }
 	GLfloat getmueveshrekZ() { return mueveshrekZ; }
+	GLint getanimacion() { return animacion; }
+	void getanimacionr() { animacion = 0; }
 	bool getShouldClose() {
 		return  glfwWindowShouldClose(mainWindow);}
 	bool* getsKeys() { return keys; }
@@ -45,6 +47,7 @@ private:
 	GLfloat	luzPrendida;
 	GLfloat	muevehx;
 	GLfloat	muevehy;
+	GLint animacion = 0;
 	bool mouseFirstMoved;
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);
 	static void ManejaMouse(GLFWwindow* window, double xPos, double yPos);
