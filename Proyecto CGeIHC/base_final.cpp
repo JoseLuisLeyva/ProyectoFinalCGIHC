@@ -16,7 +16,7 @@ Proyeco final
 #include <glm.hpp>
 #include <gtc\matrix_transform.hpp>
 #include <gtc\type_ptr.hpp>
-
+#include <gtc\random.hpp>
 //Biblioteca de audio 
 #include <irrklang/irrKlang.h> 
 
@@ -38,8 +38,10 @@ Proyeco final
 #include"Model.h"
 #include "Skybox.h"
 #include"SpotLight.h"
+Sphere sp = Sphere(1.0, 20, 20);
 
 const float toRadians = 3.14159265f / 180.0f;
+const float PI = 3.14159265f;
 float movCoche;
 float movOffset;
 float rotllanta;
@@ -52,6 +54,9 @@ std::vector<Shader> shaderList;
 Camera camera;
 float reproduciranimacion, habilitaranimacion, guardoFrame, reinicioFrame, ciclo, ciclo2, contador = 0;
 Texture pisoTexture;
+Texture arbolTexture;
+Texture troncoTexture;
+Texture esferaTexture;
 Texture Tagave;
 //materiales
 Material Material_brillante;
@@ -202,6 +207,106 @@ void CreateObjects()
 	meshList.push_back(obj4);
 
 }
+
+void CrearCilindro(int res, float height, float R) {
+
+	//constantes utilizadas en los ciclos for
+	int n, i, coordenada = 0;
+	//número de vértices ocupados
+	int verticesBase = (res + 1) * 6;
+	//cálculo del paso interno en la circunferencia y variables que almacenarán cada coordenada de cada vértice
+	GLfloat dt = 2 * PI / res, x, z, y = -0.5f;
+	//apuntadores para guardar todos los vértices e índices generados
+	GLfloat* vertices = (GLfloat*)calloc(sizeof(GLfloat*), (verticesBase) * 3);
+	unsigned int* indices = (unsigned int*)calloc(sizeof(unsigned int*), verticesBase);
+
+	//ciclo for para crear los vértices de las paredes del cilindro
+	for (n = 0; n <= (res); n++) {
+		if (n != res) {
+			x = R * cos((n)*dt);
+			z = R * sin((n)*dt);
+		}
+		//caso para terminar el círculo
+		else {
+			x = R * cos((0) * dt);
+			z = R * sin((0) * dt);
+		}
+		for (i = 0; i < 6; i++) {
+			switch (i) {
+			case 0:
+				vertices[i + coordenada] = x;
+				break;
+			case 1:
+				vertices[i + coordenada] = y;
+				break;
+			case 2:
+				vertices[i + coordenada] = z;
+				break;
+			case 3:
+				vertices[i + coordenada] = x;
+				break;
+			case 4:
+				vertices[i + coordenada] = 0.5;
+				break;
+			case 5:
+				vertices[i + coordenada] = z;
+				break;
+			}
+		}
+		coordenada += 6;
+	}
+
+	//ciclo for para crear la circunferencia inferior
+	for (n = 0; n <= (res); n++) {
+		x = R * cos((n)*dt);
+		z = R * sin((n)*dt);
+		for (i = 0; i < 3; i++) {
+			switch (i) {
+			case 0:
+				vertices[coordenada + i] = x;
+				break;
+			case 1:
+				vertices[coordenada + i] = -0.5f;
+				break;
+			case 2:
+				vertices[coordenada + i] = z;
+				break;
+			}
+		}
+		coordenada += 3;
+	}
+
+	//ciclo for para crear la circunferencia superior
+	for (n = 0; n <= (res); n++) {
+		x = R * cos((n)*dt);
+		z = R * sin((n)*dt);
+		for (i = 0; i < 3; i++) {
+			switch (i) {
+			case 0:
+				vertices[coordenada + i] = x;
+				break;
+			case 1:
+				vertices[coordenada + i] = 0.5;
+				break;
+			case 2:
+				vertices[coordenada + i] = z;
+				break;
+			}
+		}
+		coordenada += 3;
+	}
+
+	//Se generan los indices de los vértices
+	for (i = 0; i < verticesBase; i++) {
+		indices[i] = i;
+	}
+
+	//se genera el mesh del cilindro
+	Mesh* cilindro = new Mesh();
+	cilindro->CreateMesh(vertices, indices, coordenada, verticesBase);
+	meshList.push_back(cilindro);
+}
+
 
 void CrearCubo()
 {
@@ -433,6 +538,7 @@ int main()
 	
 	CreateObjects();
 	CrearCubo();
+	CrearCilindro(1.0f,1.0f,1.0f);
 	CreateShaders();
 
 	//Audio ambiental
@@ -446,6 +552,12 @@ int main()
 
 	pisoTexture= Texture("Textures/pisonevado.tga");
 	pisoTexture.LoadTextureA();
+	arbolTexture = Texture("Textures/arbol.jpg");
+	arbolTexture.LoadTextureA();
+	troncoTexture = Texture("Textures/tronco.jpg");
+	troncoTexture.LoadTextureA();
+	esferaTexture = Texture("Textures/esfera.jpg");
+	esferaTexture.LoadTextureA();
 	Tagave = Texture("Textures/Agave.tga");
 	Tagave.LoadTextureA();
 	Material_brillante = Material(4.0f, 256);
@@ -709,7 +821,8 @@ int main()
 	
 	//Agregar Kefyrame[5] para que el avión regrese al inicio
 
-
+	sp.init(); //inicializar esfera
+	sp.load();//enviar la esfera al shader
 	//SoundEngine->play2D("audio/Shrek.wav", true);
 
 	//Loop mientras no se cierra la ventana
@@ -799,6 +912,224 @@ int main()
 		pisoTexture.UseTexture();
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[2]->RenderMesh();
+
+		//Arbol de navidad con modelado geometrico
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(9.0f, 0.0f, 15.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 1.0f, 2.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		arbolTexture.UseTexture();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[1]->RenderMesh();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(9.0f, 0.3f, 15.0f));
+		model = glm::scale(model, glm::vec3(1.5, 0.5f, 1.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		arbolTexture.UseTexture();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[1]->RenderMesh();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(9.0f, 0.8f, 15.0f));
+		model = glm::scale(model, glm::vec3(1.0, 0.5f, 1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		arbolTexture.UseTexture();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[1]->RenderMesh();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(9.0f, 1.3f, 15.0f));
+		model = glm::scale(model, glm::vec3(0.7, 0.5f, 0.7f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		//pisoTexture.UseTexture();
+		arbolTexture.UseTexture();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[1]->RenderMesh();
+
+		model = glm::mat4(1.0f); 
+		model = glm::translate(model, glm::vec3(9.0f, -1.0f, 15.0f));
+		model = glm::scale(model, glm::vec3(0.5f, 2.1f, 0.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));//FALSE ES PARA QUE NO SEA TRANSPUEST
+		troncoTexture.UseTexture();
+		meshList[4]->RenderMeshGeometry();
+
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(10.95f, -1.1f, 13.85f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render(); //Renderiza esfera
+
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(9.0f, -1.1f, 13.85f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(7.05f, -1.1f, 13.85f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(9.0f, -1.1f, 16.95f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(9.975f, -1.1f, 15.4f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(8.025f, -1.1f, 15.4f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(10.45f, -0.3f, 14.15f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render(); //Renderiza esfera
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(7.55f, -0.3f, 14.15f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(9.0f, -0.3f, 14.15f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(9.0f, -0.3f, 16.45f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(9.725f, -0.3f, 15.3f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(8.275f, -0.3f, 15.3f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(9.95f, 0.2f, 14.45f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render(); //Renderiza esfera
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(8.05f, 0.2f, 14.45f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(9.0f, 0.2f, 14.45f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(9.0f, 0.2f, 15.95f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(9.475f, 0.2f, 15.2f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(8.525f, 0.2f, 15.2f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(9.7f, 0.7f, 14.65f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render(); //Renderiza esfera
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(9.0f, 0.7f, 14.65f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(8.25f, 0.7f, 14.65f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(9.0f, 0.7f, 15.7f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(9.0f, 0.7f, 15.7f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(9.35f, 0.7f, 15.175f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(8.65f, 0.7f, 15.175f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		esferaTexture.UseTexture();
+		sp.render();
 
 		//modelaux = glm::mat4(1.0);
 		model = glm::mat4(1.0);
