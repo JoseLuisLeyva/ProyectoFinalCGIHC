@@ -46,6 +46,7 @@ float movxShrek;
 float movyShrek;
 float movzShrek;
 float rotShrek;
+float rotPin;
 int avanzaS = 1;
 int patada = 1;
 float movOffset;
@@ -828,6 +829,7 @@ int main()
 	movOffset = 0.5f;
 	rotpiernasOffset = 10.0f;
 	float vuletaSherk = 0.0f;
+	rotPin = 0.0f;
 
 	sp.init(); //inicializar esfera
 	sp.load();//enviar la esfera al shader
@@ -840,6 +842,8 @@ int main()
 		deltaTime = now - lastTime;
 		lastTime = now;
 		Tiempo += deltaTime;
+
+		rotPin += movOffset * deltaTime * 50;
 
 		if (patada == 1) {
 			if (rotpiernas < 20) {
@@ -1374,7 +1378,7 @@ int main()
 		modelaux = model = glm::translate(model, glm::vec3(5.0f, -2.0f, 2.0f));
 		//modelaux = model;
 		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(1.3f, 1.3f, 1.3f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Jengibre.RenderModel();
@@ -1383,7 +1387,7 @@ int main()
 		model = glm::translate(model, glm::vec3(-12.0f, -0.7f, -55.0f));
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, rotllanta * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, rotPin * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Pinocchio.RenderModel();
@@ -2106,8 +2110,8 @@ int main()
 		fiona.RenderModel();
 
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-5.0, 0.25f, -10.1f));
-		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+		model = glm::translate(model, glm::vec3(-8.0, -1.5f, -10.1f));
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		regalos.RenderModel();
 
