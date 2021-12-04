@@ -45,9 +45,13 @@ const float PI = 3.14159265f;
 float movxShrek;
 float movyShrek;
 float movzShrek;
+float movxPinocchio;
+float movzPinocchio;
 float rotShrek;
 float rotPin;
+float rotPinocchio;
 int avanzaS = 1;
+int avanzaP = 1;
 int patada = 1;
 float movOffset;
 float rotpiernas = 0.0f;
@@ -74,6 +78,7 @@ PointLight pointLights[MAX_POINT_LIGHTS];
 SpotLight spotLights[MAX_SPOT_LIGHTS];
 
 Model Jengibre;
+Model Cpinocchio;
 Model Pinocchio;
 Model House;
 Model puerta;
@@ -425,12 +430,10 @@ int DiaNoche()
 	}
 	return banderaDia;
 }
+
 ///////////////////////////////KEYFRAMES/////////////////////
 
-
 bool animacion = false;
-
-
 
 //NEW// Keyframes
 float posXburro = 2.0, posYburro = -2.0, posZburro = -1.0;
@@ -490,7 +493,6 @@ void interpolation(void)
 	KeyFrame[playIndex].giroBurroInc = (KeyFrame[playIndex + 1].giroBurro - KeyFrame[playIndex].giroBurro) / i_max_steps;
 
 }
-
 
 void animate(void)
 {
@@ -571,8 +573,10 @@ int main()
 
 	Jengibre = Model();
 	Jengibre.LoadModel("Models/GingerbreadMan.obj");
+	Cpinocchio = Model();
+	Cpinocchio.LoadModel("Models/cabezapinocchio.obj");
 	Pinocchio = Model();
-	Pinocchio.LoadModel("Models/pinocchio.obj");
+	Pinocchio.LoadModel("Models/pinocchio2.obj");
 	Letrina = Model();
 	Letrina.LoadModel("Models/letrina.obj");
 	House = Model();
@@ -651,8 +655,8 @@ int main()
 	spotLightCount++;
 
 	
-
-	glm::vec3 posblackhawk = glm::vec3(2.0f, 0.0f, 0.0f);
+	glm::vec3 posburro = glm::vec3(2.0f, 0.0f, 0.0f);
+	glm::vec3 pospinocchio = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/posx.tga");
@@ -826,9 +830,16 @@ int main()
 	movyShrek = 0.0f;
 	movzShrek = 0.0f;
 	rotShrek = 0.0f;
+
+	movxPinocchio = 0.0f;
+	movzPinocchio = 0.0f;
+	rotPinocchio = 0.0f;
+
+	rotShrek = 0.0f;
 	movOffset = 0.5f;
 	rotpiernasOffset = 10.0f;
 	float vuletaSherk = 0.0f;
+	float vuletaPin = 0.0f;
 	rotPin = 0.0f;
 
 	sp.init(); //inicializar esfera
@@ -839,7 +850,7 @@ int main()
 	while (!mainWindow.getShouldClose())
 	{	
 		GLfloat now = glfwGetTime();
-		deltaTime = now - lastTime;
+		deltaTime = (now - lastTime)*3;
 		lastTime = now;
 		Tiempo += deltaTime;
 
@@ -865,9 +876,8 @@ int main()
 
 		}
 		//Animacion shrek
-				//animacion coche
+
 		if (mainWindow.getanimacion() == 1) {
-			printf("entro2");
 			avanzaS = 1;
 			rotShrek = 0;
 			movxShrek = 0.0f;
@@ -893,7 +903,7 @@ int main()
 				movxShrek -= movOffset * deltaTime;
 				rotShrek += movOffset * deltaTime * 20;
 
-				//vuletaCoche = -1 * 3 * cos(rotCoche * toRadians) + 3;
+
 			}
 			else {
 				avanzaS = 3;
@@ -905,7 +915,6 @@ int main()
 				if (rotShrek > 0.0f) {
 					rotShrek -= movOffset * deltaTime * 30;
 				}
-				//vuletaCoche = -1 * 3 * cos(rotCoche * toRadians) + 3;
 			}
 			else {
 				avanzaS = 4;
@@ -1084,8 +1093,105 @@ int main()
 				vuletaSherk = 0.0f;
 			}
 			break;
+		}
+		//mov Pinoccio
+		switch (avanzaP) {
+		case 1:
+			if (movxPinocchio > -45.0f)
+			{
+				movxPinocchio -= movOffset * deltaTime * 2;
 
+			}
+			else {
+				avanzaP = 2;
+			}
+			break;
+		case 2:
+			if (rotPinocchio < 90.0f)
+			{
+				movzPinocchio += movOffset * deltaTime * 2;
+				rotPinocchio += movOffset * deltaTime * 30;
+				printf("rot = %f\n", rotPinocchio);
+				vuletaPin = -5* sin(rotPinocchio * toRadians);
+			}
+			else {
+				avanzaP = 3;
+			}
+			break;
+		case 3:
+			if (movzPinocchio <110.0f)
+			{
+				movzPinocchio += movOffset * deltaTime * 2;
+			}
+			else {
+				avanzaP = 4;
+			}
+			break;
+		case 4:
+			if (rotPinocchio < 180.0f)
+			{
+				movzPinocchio += movOffset * deltaTime * 2;
+				rotPinocchio += movOffset * deltaTime * 30;
+				printf("rot = %f\n", rotPinocchio);
+				vuletaPin = -5 * sin(rotPinocchio * toRadians);
+			}
+			else {
+				avanzaP = 5;
+			}
+			break;
+		case 5:
+			if (movxPinocchio < 75.0f)
+			{
+				movxPinocchio += movOffset * deltaTime * 2;
+			}
+			else {
+				avanzaP = 6;
+			}
+			break;
+		case 6:
+			if (rotPinocchio < 270.0f)
+			{
+				movzPinocchio -= movOffset * deltaTime * 2;
+				rotPinocchio += movOffset * deltaTime * 30;
+				vuletaPin = -5 * sin(rotPinocchio * toRadians);
+			}
+			else {
+				avanzaP = 7;
+			}
+			break;
+		case 7:
+			if (movzPinocchio > 2.0f)
+			{
+				movzPinocchio -= movOffset * deltaTime * 2;
+			}
+			else {
+				avanzaP = 8;
+			}
+			break;
+		case 8:
+			if (rotPinocchio < 360.0f)
+			{
+				movzPinocchio -= movOffset * deltaTime * 2;
+				rotPinocchio += movOffset * deltaTime * 30;
+				vuletaPin = -5 * sin(rotPinocchio * toRadians);
+			}
+			else {
+				avanzaP = 9;
+			}
+			break;
+		case 9:
+			if (movxPinocchio > 0.0f)
+			{
+				movxPinocchio -= movOffset * deltaTime * 2;
+			}
+			else {
+				avanzaP = 1;
+				movxPinocchio = 0.0f;
+				movzPinocchio = 0.0f;
+				rotPinocchio = 0.0f;
 
+			}
+			break;
 		}
 
 		//Luces tipo puntual con prendido y apagado automatico
@@ -1383,11 +1489,20 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Jengibre.RenderModel();
 
+		//Pinocchio
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(-12.0f, -0.7f, -55.0f));
+		pospinocchio = glm::vec3(-12.0f + movxPinocchio + vuletaPin, -0.7f, -55.0f + movzPinocchio);
+		model = glm::translate(model, pospinocchio);
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::rotate(model, rotPin * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Cpinocchio.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, pospinocchio);
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::rotate(model, rotPinocchio * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Pinocchio.RenderModel();
@@ -2079,8 +2194,8 @@ int main()
 		interior.RenderModel();
 
 		model = glm::mat4(1.0);
-		posblackhawk = glm::vec3(posXburro + movBurro_x, posYburro + movBurro_y, posZburro + movBurro_z);
-		model = glm::translate(model, posblackhawk);
+		posburro = glm::vec3(posXburro + movBurro_x, posYburro + movBurro_y, posZburro + movBurro_z);
+		model = glm::translate(model, posburro);
 		//model = glm::translate(model, glm::vec3(-10.0f, -1.7f, -0.1f));
 		model = glm::scale(model, glm::vec3(0.15f, 0.15f, 0.15f));
 		model = glm::rotate(model, giroBurro * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -2193,7 +2308,6 @@ int main()
 		shrekpieizq.RenderModel();
 
 
-		//Agave ¿qué sucede si lo renderizan antes del coche y de la pista?
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-10.0f, -1.7f, -2.0f));
 		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
