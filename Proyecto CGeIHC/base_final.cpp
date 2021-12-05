@@ -47,11 +47,15 @@ float movyShrek;
 float movzShrek;
 float movxPinocchio;
 float movzPinocchio;
+float movxDragon;
+float movzDragon;
+float rotDragon;
 float rotShrek;
 float rotPin;
 float rotPinocchio;
 int avanzaS = 1;
 int avanzaP = 1;
+int avanzaD = 1;
 int patada = 1;
 float movOffset;
 float rotpiernas = 0.0f;
@@ -97,6 +101,7 @@ Model shrekpantbajo;
 Model shrekpieizq;
 Model shrekpieder;
 Model regalos;
+Model dragon;
 
 
 Skybox skybox;
@@ -573,6 +578,8 @@ int main()
 
 	Jengibre = Model();
 	Jengibre.LoadModel("Models/GingerbreadMan.obj");
+	dragon = Model();
+	dragon.LoadModel("Models/dragon.obj");
 	Cpinocchio = Model();
 	Cpinocchio.LoadModel("Models/cabezapinocchio.obj");
 	Pinocchio = Model();
@@ -657,6 +664,7 @@ int main()
 	
 	glm::vec3 posburro = glm::vec3(2.0f, 0.0f, 0.0f);
 	glm::vec3 pospinocchio = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 posdragon = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	std::vector<std::string> skyboxFaces;
 	skyboxFaces.push_back("Textures/Skybox/posx.tga");
@@ -835,11 +843,16 @@ int main()
 	movzPinocchio = 0.0f;
 	rotPinocchio = 0.0f;
 
+	movxDragon = 0.0f;
+	movzDragon = 0.0f;
+	rotDragon = 0.0f;
+
 	rotShrek = 0.0f;
 	movOffset = 0.5f;
 	rotpiernasOffset = 10.0f;
 	float vuletaSherk = 0.0f;
 	float vuletaPin = 0.0f;
+	float vuletaDra = 0.0f;
 	rotPin = 0.0f;
 
 	sp.init(); //inicializar esfera
@@ -1193,7 +1206,48 @@ int main()
 			}
 			break;
 		}
+		//animacion dragon
+				//moviniento helicompetro 
+		if (avanzaD > 0) {
+			if (movxDragon < 10.0f)
+			{
+				movxDragon += movOffset * deltaTime*2;
 
+			}
+			else {
+				if (rotDragon <= 180) {
+
+					rotDragon += movOffset * deltaTime * 50;
+					movzDragon += movOffset * deltaTime*3;
+					vuletaDra = 6 * sin(rotDragon * toRadians);
+				}
+				else {
+					avanzaD = -1.0f;
+
+				}
+
+			}
+		}
+
+		else {
+			if (movxDragon > -10.0f) {
+				movxDragon -= movOffset * deltaTime*2;
+			}
+			else {
+				if (rotDragon <= 360) {
+					rotDragon += movOffset * deltaTime * 50;
+					movzDragon -= movOffset * deltaTime*3;
+					vuletaDra = 6 * sin(rotDragon * toRadians);
+				}
+				else {
+					avanzaD = 1.0f;
+					rotDragon = 0.0f;
+					movxDragon = -10.0f;
+					movzDragon = 0.0f;
+
+				}
+			}
+		}
 		//Luces tipo puntual con prendido y apagado automatico
 		if (banderaDia > 0)
 		{
@@ -1479,6 +1533,8 @@ int main()
 		esferaTexture.UseTexture();
 		sp.render();
 
+		////////////////////
+
 		//modelaux = glm::mat4(1.0);
 		model = glm::mat4(1.0);
 		modelaux = model = glm::translate(model, glm::vec3(5.0f, -2.0f, 2.0f));
@@ -1488,6 +1544,17 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		Jengibre.RenderModel();
+
+		//dragon
+		model = glm::mat4(1.0);
+		posdragon = glm::vec3(5.0f + movxDragon + vuletaDra, 16.0f, 2.0f + movzDragon);
+		model = glm::translate(model, posdragon);
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, -rotDragon * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		dragon.RenderModel();
 
 		//Pinocchio
 		model = glm::mat4(1.0);
