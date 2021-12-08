@@ -66,7 +66,7 @@ Window mainWindow;
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
 Camera camera;
-float reproduciranimacion, habilitaranimacion, guardoFrame, reinicioFrame, ciclo, ciclo2, contador = 0;
+float reproduciranimacion, habilitaranimacion, guardoFrame, reinicioFrame, ciclo, ciclo2, contador, musica, musica2 = 0;
 Texture pisoTexture;
 Texture arbolTexture;
 Texture troncoTexture;
@@ -542,8 +542,6 @@ void animate(void)
 //Audio
 irrklang:: ISoundEngine* engine = irrklang::createIrrKlangDevice();
 
-
-
 int main() 
 {
 	
@@ -622,15 +620,11 @@ int main()
 	regalos.LoadModel("Models/giftboxes.obj");
 
 
-
-	
-
-
 	//luz direccional, sólo 1 y siempre debe de existir
 	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f, 
 								0.3f, 0.3f,
 								0.0f, 0.0f, -1.0f);
-//contador de luces puntuales
+    //contador de luces puntuales
 	unsigned int pointLightCount = 0;
 	//Declaración de primer luz puntual
 	pointLights[0] = PointLight(1.0f, 1.0f, 0.0f,
@@ -859,16 +853,11 @@ int main()
 
 	sp.init(); //inicializar esfera
 	sp.load();//enviar la esfera al shader
-	//SoundEngine->play2D("audio/Shrek.wav", true);
+
 	
-
-
-	//funsoundtrack();
-
 	//Loop mientras no se cierra la ventana
 	while (!mainWindow.getShouldClose())
-	{	
-		soundtracks(mainWindow.getsKeys());
+	{
 		GLfloat now = glfwGetTime();
 		deltaTime = (now - lastTime)*3;
 		lastTime = now;
@@ -1115,6 +1104,7 @@ int main()
 			break;
 		}
 		//mov Pinoccio
+
 		switch (avanzaP) {
 		case 1:
 			if (movxPinocchio > -45.0f)
@@ -1214,7 +1204,6 @@ int main()
 			break;
 		}
 		//animacion dragon
-				//moviniento helicompetro 
 		if (avanzaD > 0) {
 			if (movxDragon < 10.0f)
 			{
@@ -1286,6 +1275,7 @@ int main()
 		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
 		//para keyframes
 		inputKeyframes(mainWindow.getsKeys());
+		soundtracks(mainWindow.getsKeys());
 		animate();
 		// Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -2403,13 +2393,28 @@ int main()
 	return 0;
 }
 
-//Soundtrack
-irrklang::ISoundEngine* engines = irrklang::createIrrKlangDevice();
+irrklang::ISoundEngine* SoundEnginet = irrklang::createIrrKlangDevice();
 void soundtracks(bool* keys) {
-	if (keys[GLFW_KEY_8]){
-		
-		engines->play2D("audio/Shrek.wav", false);
+	if (keys[GLFW_KEY_8]) {
+
+		if (musica < 1)
+		{
+			
+			SoundEnginet->play2D("audio/Shrek.wav", false,false, true);
+			printf("La cancion es: somebofy\n");
+			musica++;
+			musica2 = 0;
+		}
 	}
+
+	if (keys[GLFW_KEY_7]) {
+		if (musica2 < 1)
+		{
+			SoundEnginet->stopAllSounds();
+			musica = 0;
+		}
+	}
+	
 }
 
 
