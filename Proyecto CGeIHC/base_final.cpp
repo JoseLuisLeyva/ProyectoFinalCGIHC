@@ -114,7 +114,7 @@ static double limitFPS = 1.0 / 60.0;
 
 //void my_input(GLFWwindow *window);
 void inputKeyframes(bool* keys);
-
+void soundtracks(bool* keys);
 
 // Vertex Shader
 //comentario
@@ -537,11 +537,12 @@ void animate(void)
 
 	}
 }
-
 /* FIN KEYFRAMES*/
 
 //Audio
 irrklang:: ISoundEngine* engine = irrklang::createIrrKlangDevice();
+
+
 
 int main() 
 {
@@ -557,8 +558,9 @@ int main()
 	//Audio ambiental
 	irrklang::ISound* music = engine->play3D("audio/fondoc.wav",
 		irrklang::vec3df(1.0, 1.0, 1.0), true, false, true);
-	if (music)
+	if (music) {
 		music->setMinDistance(0.5f);
+	}
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 5.0f, 0.5f);
 
@@ -858,10 +860,15 @@ int main()
 	sp.init(); //inicializar esfera
 	sp.load();//enviar la esfera al shader
 	//SoundEngine->play2D("audio/Shrek.wav", true);
+	
+
+
+	//funsoundtrack();
 
 	//Loop mientras no se cierra la ventana
 	while (!mainWindow.getShouldClose())
 	{	
+		soundtracks(mainWindow.getsKeys());
 		GLfloat now = glfwGetTime();
 		deltaTime = (now - lastTime)*3;
 		lastTime = now;
@@ -2395,6 +2402,16 @@ int main()
 
 	return 0;
 }
+
+//Soundtrack
+irrklang::ISoundEngine* engines = irrklang::createIrrKlangDevice();
+void soundtracks(bool* keys) {
+	if (keys[GLFW_KEY_8]){
+		
+		engines->play2D("audio/Shrek.wav", false);
+	}
+}
+
 
 void inputKeyframes(bool* keys)
 {
