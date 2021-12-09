@@ -20,6 +20,7 @@ public:
 	GLfloat getmuevehx() { return muevehx; }
 	GLfloat getmuevehy() { return muevehy; }
 	GLfloat getluzPrendida() { return luzPrendida; }
+	GLfloat getAnimacionpinocho() { return  animacionpinocho; }
 	GLfloat getmueveshrekX() { return mueveshrekX; }
 	GLfloat getmueveshrekZ() { return mueveshrekZ; }
 	GLint getanimacion() { return animacion; }
@@ -45,6 +46,7 @@ private:
 	GLfloat	llantaz;
 	GLfloat	helicesy;
 	GLfloat	luzPrendida;
+	GLfloat	animacionpinocho;
 	GLfloat	muevehx;
 	GLfloat	muevehy;
 	GLint animacion = 0;

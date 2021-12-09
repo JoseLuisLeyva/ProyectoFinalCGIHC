@@ -1171,105 +1171,107 @@ int main()
 			break;
 		}
 		//mov Pinoccio
+		if (mainWindow.getAnimacionpinocho() > 0) {
+			switch (avanzaP) {
+			case 1:
+				if (movxPinocchio > -45.0f)
+				{
+					movxPinocchio -= movOffset * deltaTime * 2;
 
-		switch (avanzaP) {
-		case 1:
-			if (movxPinocchio > -45.0f)
-			{
-				movxPinocchio -= movOffset * deltaTime * 2;
+				}
+				else {
+					avanzaP = 2;
+				}
+				break;
+			case 2:
+				if (rotPinocchio < 90.0f)
+				{
+					movzPinocchio += movOffset * deltaTime * 2;
+					rotPinocchio += movOffset * deltaTime * 30;
+					//printf("rot = %f\n", rotPinocchio);
+					vuletaPin = -5 * sin(rotPinocchio * toRadians);
+				}
+				else {
+					avanzaP = 3;
+				}
+				break;
+			case 3:
+				if (movzPinocchio < 110.0f)
+				{
+					movzPinocchio += movOffset * deltaTime * 2;
+				}
+				else {
+					avanzaP = 4;
+				}
+				break;
+			case 4:
+				if (rotPinocchio < 180.0f)
+				{
+					movzPinocchio += movOffset * deltaTime * 2;
+					rotPinocchio += movOffset * deltaTime * 30;
+					//printf("rot = %f\n", rotPinocchio);
+					vuletaPin = -5 * sin(rotPinocchio * toRadians);
+				}
+				else {
+					avanzaP = 5;
+				}
+				break;
+			case 5:
+				if (movxPinocchio < 75.0f)
+				{
+					movxPinocchio += movOffset * deltaTime * 2;
+				}
+				else {
+					avanzaP = 6;
+				}
+				break;
+			case 6:
+				if (rotPinocchio < 270.0f)
+				{
+					movzPinocchio -= movOffset * deltaTime * 2;
+					rotPinocchio += movOffset * deltaTime * 30;
+					vuletaPin = -5 * sin(rotPinocchio * toRadians);
+				}
+				else {
+					avanzaP = 7;
+				}
+				break;
+			case 7:
+				if (movzPinocchio > 2.0f)
+				{
+					movzPinocchio -= movOffset * deltaTime * 2;
+				}
+				else {
+					avanzaP = 8;
+				}
+				break;
+			case 8:
+				if (rotPinocchio < 360.0f)
+				{
+					movzPinocchio -= movOffset * deltaTime * 2;
+					rotPinocchio += movOffset * deltaTime * 30;
+					vuletaPin = -5 * sin(rotPinocchio * toRadians);
+				}
+				else {
+					avanzaP = 9;
+				}
+				break;
+			case 9:
+				if (movxPinocchio > 0.0f)
+				{
+					movxPinocchio -= movOffset * deltaTime * 2;
+				}
+				else {
+					avanzaP = 1;
+					movxPinocchio = 0.0f;
+					movzPinocchio = 0.0f;
+					rotPinocchio = 0.0f;
 
+				}
+				break;
 			}
-			else {
-				avanzaP = 2;
-			}
-			break;
-		case 2:
-			if (rotPinocchio < 90.0f)
-			{
-				movzPinocchio += movOffset * deltaTime * 2;
-				rotPinocchio += movOffset * deltaTime * 30;
-				//printf("rot = %f\n", rotPinocchio);
-				vuletaPin = -5* sin(rotPinocchio * toRadians);
-			}
-			else {
-				avanzaP = 3;
-			}
-			break;
-		case 3:
-			if (movzPinocchio <110.0f)
-			{
-				movzPinocchio += movOffset * deltaTime * 2;
-			}
-			else {
-				avanzaP = 4;
-			}
-			break;
-		case 4:
-			if (rotPinocchio < 180.0f)
-			{
-				movzPinocchio += movOffset * deltaTime * 2;
-				rotPinocchio += movOffset * deltaTime * 30;
-				//printf("rot = %f\n", rotPinocchio);
-				vuletaPin = -5 * sin(rotPinocchio * toRadians);
-			}
-			else {
-				avanzaP = 5;
-			}
-			break;
-		case 5:
-			if (movxPinocchio < 75.0f)
-			{
-				movxPinocchio += movOffset * deltaTime * 2;
-			}
-			else {
-				avanzaP = 6;
-			}
-			break;
-		case 6:
-			if (rotPinocchio < 270.0f)
-			{
-				movzPinocchio -= movOffset * deltaTime * 2;
-				rotPinocchio += movOffset * deltaTime * 30;
-				vuletaPin = -5 * sin(rotPinocchio * toRadians);
-			}
-			else {
-				avanzaP = 7;
-			}
-			break;
-		case 7:
-			if (movzPinocchio > 2.0f)
-			{
-				movzPinocchio -= movOffset * deltaTime * 2;
-			}
-			else {
-				avanzaP = 8;
-			}
-			break;
-		case 8:
-			if (rotPinocchio < 360.0f)
-			{
-				movzPinocchio -= movOffset * deltaTime * 2;
-				rotPinocchio += movOffset * deltaTime * 30;
-				vuletaPin = -5 * sin(rotPinocchio * toRadians);
-			}
-			else {
-				avanzaP = 9;
-			}
-			break;
-		case 9:
-			if (movxPinocchio > 0.0f)
-			{
-				movxPinocchio -= movOffset * deltaTime * 2;
-			}
-			else {
-				avanzaP = 1;
-				movxPinocchio = 0.0f;
-				movzPinocchio = 0.0f;
-				rotPinocchio = 0.0f;
-
-			}
-			break;
 		}
+
 		//animacion dragon
 		if (avanzaD > 0) {
 			if (movxDragon < 10.0f)
