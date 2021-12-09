@@ -49,6 +49,9 @@ float movxPinocchio;
 float movzPinocchio;
 float movxDragon;
 float movzDragon;
+float movxFiona;
+float movzFiona;
+float rotFiona;
 float rotDragon;
 float rotShrek;
 float rotPin;
@@ -56,6 +59,7 @@ float rotPinocchio;
 int avanzaS = 1;
 int avanzaP = 1;
 int avanzaD = 1;
+int avanzaF = 1;
 int patada = 1;
 float movOffset;
 float rotpiernas = 0.0f;
@@ -909,6 +913,10 @@ int main()
 	movzDragon = 0.0f;
 	rotDragon = 0.0f;
 
+	movxFiona = 0.0f;
+	movzFiona = 0.0f;
+	rotFiona = 0.0f;
+
 	rotShrek = 0.0f;
 	movOffset = 0.5f;
 	rotpiernasOffset = 10.0f;
@@ -1170,6 +1178,93 @@ int main()
 			}
 			break;
 		}
+		//animacion Fiona
+		switch (avanzaF) {
+		case 1:
+			if (movzFiona < 6.0f) {
+				movzFiona += movOffset * deltaTime;
+				movxFiona -= movOffset * deltaTime * 1.75;
+				rotFiona += movOffset * deltaTime * 10;
+
+			}
+			else {
+				avanzaF = 2;
+			}
+			break;
+		case 2:
+			if (rotFiona < 100.0f) {
+				rotFiona += movOffset * deltaTime * 10;
+
+			}
+			else {
+				avanzaF = 3;
+			}
+			break;
+		case 3:
+			if (movzFiona < 21.0f) {
+				movzFiona += movOffset * deltaTime;
+				movxFiona += movOffset * deltaTime * 0.45;
+
+			}
+			else {
+				avanzaF = 4;
+
+			}
+			break;
+		case 4:
+			if (rotFiona > -80.0f) {
+				rotFiona -= movOffset * deltaTime * 30;
+
+			}
+			else {
+				avanzaF = 5;
+			}
+			break;
+		case 5:
+			if (movzFiona > 6.0f) {
+				movzFiona -= movOffset * deltaTime;
+				movxFiona -= movOffset * deltaTime * 0.50;
+
+			}
+			else {
+				avanzaF = 6;
+
+			}
+			break;
+		case 6:
+			if (rotFiona > -170.0f) {
+				rotFiona -= movOffset * deltaTime * 30;
+			}
+			else {
+				avanzaF = 7;
+
+			}
+			break;
+		case 7:
+			if (movzFiona > 0.0f) {
+				movzFiona -= movOffset * deltaTime;
+				movxFiona += movOffset * deltaTime * 1.55;
+			}
+			else {
+				avanzaF = 8;
+
+			}
+			break;
+		case 8:
+			if (rotFiona > -290.0f) {
+				rotFiona -= movOffset * deltaTime * 30;
+			}
+			else {
+				avanzaF = 1;
+				movzFiona = 0;
+				movxFiona = 0;
+				rotFiona = 0;
+
+			}
+			break;
+		}
+
+
 		//mov Pinoccio
 		if (mainWindow.getAnimacionpinocho() > 0) {
 			switch (avanzaP) {
@@ -2371,10 +2466,14 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		puss.RenderModel();
 
+
+		//Fiona
+
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(8.0f, -2.0f, -12.1f));
+		model = glm::translate(model, glm::vec3(8.0f+movxFiona, -2.0f, -12.1f+movzFiona));
 		model = glm::scale(model, glm::vec3(0.05f, 0.05f, 0.05f));
 		model = glm::rotate(model, -60 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, rotFiona * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		fiona.RenderModel();
 
