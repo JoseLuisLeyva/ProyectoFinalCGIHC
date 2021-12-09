@@ -80,6 +80,7 @@ DirectionalLight mainLight;
 //para declarar varias luces de tipo pointlight
 PointLight pointLights[MAX_POINT_LIGHTS];
 SpotLight spotLights[MAX_SPOT_LIGHTS];
+SpotLight spotLightsAux[MAX_SPOT_LIGHTS];
 
 Model Jengibre;
 Model Cpinocchio;
@@ -107,6 +108,7 @@ Model dragon;
 Skybox skybox;
 Sphere cabeza = Sphere(0.5, 20, 20);
 GLfloat Tiempo = 0.0f;
+GLfloat cont = 0.0f;
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 
@@ -648,11 +650,75 @@ int main()
 		20.0f);
 	spotLightCount++;
 
-	//luz fija
-	spotLights[1] = SpotLight(1.0f, 0.0f, 1.0f,
-		0.0f, 2.0f,
-		10.0f, 0.0f, 0.0f,
-		0.0f, -5.0f, 0.0f,
+	//Show de luces
+	spotLights[1] = SpotLight(0.0f, 0.9f, 0.0f, //
+		10.0f, 20.0f,
+		10.0f, -0.3f, 16.0f,
+		0.4f, -5.0f, 0.5f,
+		1.0f, 0.0f, 0.0f,
+		10.0f);
+	spotLightCount++;
+
+	spotLights[2] = SpotLight(0.8f, 0.0f, 0.2f,  //rojo
+		10.0f, 20.0f,
+		10.0f, -0.3f, 13.9f,
+		2.0f, -5.0f, -1.5f,
+		1.0f, 0.0f, 0.0f,
+		10.0f);
+	spotLightCount++;
+
+	spotLights[3] = SpotLight(0.0f, 0.3f, 0.7f, //celeste
+		10.0f, 20.0f,
+		8.0f, -0.3f, 15.4f,
+		-2.55f, -5.0f, -2.0f,
+		1.0f, 0.0f, 0.0f,
+		10.0f);
+	spotLightCount++;
+
+	spotLights[4] = SpotLight(0.2f, 1.0f, 0.0f, //
+		10.0f, 20.0f,
+		11.0f, -0.3f, 15.0f,
+		-0.4f, -5.0f, 1.5f,
+		1.0f, 0.0f, 0.0f,
+		10.0f);
+	spotLightCount++;
+
+	spotLights[5] = SpotLight(0.9f, 0.0f, 0.1f,  //rojo
+		10.0f, 20.0f,
+		9.0f, -0.3f, 13.9f,
+		0.0f, -5.0f, -1.5f,
+		1.0f, 0.0f, 0.0f,
+		10.0f);
+	spotLightCount++;
+
+	spotLights[6] = SpotLight(0.0f, 0.6f, 0.5f, //celeste
+		10.0f, 20.0f,
+		8.025f, -0.3f, 15.4f,
+		-1.0f, -5.0f, 1.0f,
+		1.0f, 0.0f, 0.0f,
+		10.0f);
+	spotLightCount++;
+
+	spotLights[7] = SpotLight(0.4f, 1.0f, 0.0f, //
+		10.0f, 20.0f,
+		12.0f, -0.3f, 14.0f,
+		-1.4f, -5.0f, 2.5f,
+		1.0f, 0.0f, 0.0f,
+		10.0f);
+	spotLightCount++;
+
+	spotLights[8] = SpotLight(1.0f, 0.0f, 0.0f,  //rojo
+		10.0f, 20.0f,
+		8.0f, -0.3f, 13.9f,
+		-2.0f, -5.0f, -1.5f,
+		1.0f, 0.0f, 0.0f,
+		10.0f);
+	spotLightCount++;
+
+	spotLights[9] = SpotLight(0.0f, 0.9f, 0.3f, //celeste
+		10.0f, 20.0f,
+		8.025f, -0.3f, 15.4f,
+		0.5f, -5.0f, 4.0f,
 		1.0f, 0.0f, 0.0f,
 		10.0f);
 	spotLightCount++;
@@ -859,9 +925,10 @@ int main()
 	while (!mainWindow.getShouldClose())
 	{
 		GLfloat now = glfwGetTime();
-		deltaTime = (now - lastTime)*3;
+		deltaTime = (now - lastTime);
 		lastTime = now;
 		Tiempo += deltaTime;
+		cont += deltaTime;
 
 		rotPin += movOffset * deltaTime * 50;
 
@@ -1023,7 +1090,7 @@ int main()
 			}
 			else {
 				avanzaS = 12;
-				printf("z: %f", movzShrek);
+				//printf("z: %f", movzShrek);
 			}
 			break;
 
@@ -1083,7 +1150,7 @@ int main()
 			}
 			else {
 				avanzaS = 17;
-				printf("movxShrek %f", movzShrek);
+				//printf("movxShrek %f", movzShrek);
 			}
 			break;
 		case 17:
@@ -1121,7 +1188,7 @@ int main()
 			{
 				movzPinocchio += movOffset * deltaTime * 2;
 				rotPinocchio += movOffset * deltaTime * 30;
-				printf("rot = %f\n", rotPinocchio);
+				//printf("rot = %f\n", rotPinocchio);
 				vuletaPin = -5* sin(rotPinocchio * toRadians);
 			}
 			else {
@@ -1142,7 +1209,7 @@ int main()
 			{
 				movzPinocchio += movOffset * deltaTime * 2;
 				rotPinocchio += movOffset * deltaTime * 30;
-				printf("rot = %f\n", rotPinocchio);
+				//printf("rot = %f\n", rotPinocchio);
 				vuletaPin = -5 * sin(rotPinocchio * toRadians);
 			}
 			else {
@@ -1259,14 +1326,35 @@ int main()
 		//SpotLight prendido y apagado con teclado
 		if (mainWindow.getluzPrendida() > 0)
 		{
-			spotLightCount = 2;
-			shaderList[0].SetSpotLights(spotLights, spotLightCount);
+			//Show de luces 
+			if (cont < 3) {
+				spotLightCount = 4;
+				shaderList[0].SetSpotLights(spotLightsAux, spotLightCount);
+			}
+			else {
+				if (cont < 6) {
+					spotLightCount = 7;
+					shaderList[0].SetSpotLights(spotLightsAux, spotLightCount);
+				}
+				else {
+					if (cont < 9) {
+						spotLightCount = 10;
+						shaderList[0].SetSpotLights(spotLightsAux, spotLightCount);
+					}
+					else {
+						cont = 0;
+					}
+
+				}
+
+			}
 		}
 		else
 		{
 			spotLightCount = 0;
-			shaderList[0].SetSpotLights(spotLights, spotLightCount);
+			shaderList[0].SetSpotLights(spotLightsAux, spotLightCount);
 		}
+
 	
 		//Recibir eventos del usuario
 		glfwPollEvents();
