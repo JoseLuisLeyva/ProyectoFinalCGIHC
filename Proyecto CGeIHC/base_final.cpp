@@ -2482,16 +2482,34 @@ int main()
 }
 
 irrklang::ISoundEngine* SoundEnginet = irrklang::createIrrKlangDevice();
+irrklang::ISoundEngine* SoundEngines = irrklang::createIrrKlangDevice();
+float musica3, musica4 = 0;
 void soundtracks(bool* keys) {
 	if (keys[GLFW_KEY_8]) {
 
 		if (musica < 1)
 		{
-			
 			SoundEnginet->play2D("audio/Shrek.wav", false,false, true);
-			printf("La cancion es: somebofy\n");
 			musica++;
 			musica2 = 0;
+		}
+	}
+
+	if (keys[GLFW_KEY_M]) {
+
+		if (musica3 < 1)
+		{
+			SoundEngines->play2D("audio/ShrekCuento.wav", false, false, true);
+			musica3++;
+			musica4 = 0;
+		}
+	}
+
+	if (keys[GLFW_KEY_N]) {
+		if (musica4 < 1)
+		{
+			SoundEngines->stopAllSounds();
+			musica3= 0;
 		}
 	}
 
@@ -2568,6 +2586,7 @@ void inputKeyframes(bool* keys)
 		{
 			//printf("movBurro_x es: %f\n", movBurro_x);
 			movBurro_x += 1.0f;
+			SoundEngines->play2D("audio/burro2.wav", false, false, true);
 			printf("\n movBurro_x es: %f\n", movBurro_x);
 			ciclo++;
 			ciclo2 = 0;
